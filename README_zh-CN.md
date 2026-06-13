@@ -77,13 +77,15 @@ src/
 
 ## 🧪 开发命令
 
-| 命令 | 说明 |
-|------|------|
-| `npm run dev` | 启动开发服务器 |
-| `npm run build` | 构建生产版本 |
-| `npm run lint` | ESLint 检查 |
-| `npm run format` | Prettier 格式化 |
-| `npm run check` | Svelte/TS 类型检查 |
+| 命令                 | 说明                  |
+| -------------------- | --------------------- |
+| `npm run dev`        | 启动开发服务器        |
+| `npm run build`      | 构建生产版本          |
+| `npm run lint`       | ESLint 检查           |
+| `npm run lint:fix`   | ESLint 检查并自动修复 |
+| `npm run format`     | Prettier 格式检查     |
+| `npm run format:fix` | Prettier 格式化并写入 |
+| `npm run check`      | Svelte/TS 类型检查    |
 
 ## 📄 开源协议
 

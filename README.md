@@ -77,13 +77,15 @@ src/
 
 ## 🧪 Dev Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Build for production |
-| `npm run lint` | ESLint check |
-| `npm run format` | Prettier format |
-| `npm run check` | Svelte/TS type check |
+| Command              | Description             |
+| -------------------- | ----------------------- |
+| `npm run dev`        | Start dev server        |
+| `npm run build`      | Build for production    |
+| `npm run lint`       | ESLint check            |
+| `npm run lint:fix`   | ESLint check & auto-fix |
+| `npm run format`     | Prettier format check   |
+| `npm run format:fix` | Prettier format & write |
+| `npm run check`      | Svelte/TS type check    |
 
 ## 📄 License
 
