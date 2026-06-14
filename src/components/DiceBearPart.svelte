@@ -2,8 +2,9 @@
   /**
    * DiceBear isolated component preview.
    *
-   * Renders ONLY one specific facial feature by zooming into the
-   * relevant region using CSS transform:scale + transform-origin.
+   * Renders a DiceBear avatar with ONLY one specific param set,
+   * then modifies the SVG viewBox to crop to the relevant facial region.
+   * This shows ONLY the relevant body part, not the full face.
    */
   import * as collection from '@dicebear/collection'
   import { createAvatar } from '@dicebear/core'
@@ -18,66 +19,80 @@
   let { style, component, option, size = 32 }: Props = $props()
 
   /**
-   * Transform-origin for each component (percentage).
-   * Controls which point of the avatar is centered when zoomed in.
+   * Crop regions for each component in viewBox coordinates.
+   * Format: { x, y, width, height } — the area to show.
+   * Based on the component transforms from each style's base component.
    */
-  const FOCUS: Record<string, string> = {
-    eyebrows: '50% 28%',
-    eyes: '50% 36%',
-    nose: '50% 45%',
-    mouth: '50% 52%',
-    lips: '50% 52%',
-    top: '50% 18%',
-    hair: '50% 18%',
-    head: '50% 40%',
-    glasses: '50% 32%',
-    earrings: '50% 35%',
-    facialHair: '50% 58%',
-    beard: '50% 58%',
-    clothing: '50% 75%',
-    shirt: '50% 75%',
-    body: '50% 50%',
-    face: '50% 40%',
-    accessories: '50% 30%',
-    features: '50% 40%',
-    skinColor: '50% 40%',
-    hairColor: '50% 25%',
-    clothesColor: '50% 75%',
-    hatColor: '50% 15%',
-    accessoriesColor: '50% 30%',
-    facialHairColor: '50% 58%',
+  const CROPS: Record<string, { x: number; y: number; w: number; h: number }> = {
+    eyebrows: { x: 66, y: 72, w: 80, h: 32 },
+    eyes: { x: 66, y: 82, w: 80, h: 40 },
+    nose: { x: 94, y: 112, w: 60, h: 36 },
+    mouth: { x: 68, y: 126, w: 76, h: 44 },
+    lips: { x: 68, y: 126, w: 76, h: 44 },
+    top: { x: 0, y: 0, w: 200, h: 70 },
+    hair: { x: 0, y: 0, w: 200, h: 70 },
+    head: { x: 40, y: 30, w: 200, h: 200 },
+    glasses: { x: 60, y: 78, w: 90, h: 36 },
+    earrings: { x: 50, y: 80, w: 100, h: 40 },
+    facialHair: { x: 40, y: 140, w: 120, h: 60 },
+    beard: { x: 40, y: 140, w: 120, h: 60 },
+    clothing: { x: 20, y: 160, w: 160, h: 120 },
+    shirt: { x: 20, y: 160, w: 160, h: 120 },
+    body: { x: 20, y: 100, w: 160, h: 160 },
+    face: { x: 40, y: 60, w: 200, h: 140 },
+    accessories: { x: 50, y: 30, w: 110, h: 100 },
+    features: { x: 40, y: 60, w: 200, h: 140 },
+    skinColor: { x: 40, y: 40, w: 200, h: 200 },
+    hairColor: { x: 0, y: 0, w: 200, h: 60 },
+    clothesColor: { x: 20, y: 160, w: 160, h: 120 },
+    hatColor: { x: 0, y: 0, w: 200, h: 60 },
+    accessoriesColor: { x: 50, y: 30, w: 110, h: 100 },
+    facialHairColor: { x: 40, y: 140, w: 120, h: 60 },
   }
 
-  let origin = $derived(FOCUS[component] ?? '50% 40%')
+  let crop = $derived(CROPS[component])
 
-  const renderSize = 280
-
-  function renderSvg(): string {
+  function renderPart(): string {
     try {
       const styleFn = (collection as Record<string, object>)[style]
       if (!styleFn || typeof styleFn !== 'object') {
         return fallback('?')
       }
+
+      // Generate full avatar with only this one param
       const avatar = createAvatar(styleFn as never, {
         seed: `part-${component}-${option}`,
-        size: renderSize,
+        size: 280,
         [component]: [option],
       })
-      return avatar.toDataUri()
+
+      const svg = avatar.toString()
+
+      if (!crop) {
+        // No crop defined for this component, show full avatar
+        return avatar.toDataUri()
+      }
+
+      // Replace viewBox with crop region
+      const cropped = svg.replace(
+        /viewBox="[^"]+"/,
+        `viewBox="${crop.x} ${crop.y} ${crop.w} ${crop.h}"`,
+      )
+
+      return `data:image/svg+xml,${encodeURIComponent(cropped)}`
     } catch {
       return fallback('✕')
     }
   }
 
-  let svgDataUri = $derived(renderSvg())
+  let svgDataUri = $derived(renderPart())
 
   function fallback(symbol: string): string {
-    const s = size
     return (
       `data:image/svg+xml,` +
       encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}">` +
-          `<rect fill="#e9ecef" width="${s}" height="${s}" rx="4"/>` +
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">` +
+          `<rect fill="#e9ecef" width="${size}" height="${size}" rx="4"/>` +
           `<text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="10" fill="#999">${symbol}</text>` +
           `</svg>`,
       )
@@ -85,15 +100,9 @@
   }
 </script>
 
-<!--
-  Zoom trick: scale(2) with transform-origin pointing to the feature area.
-  The container clips everything outside. This effectively shows ONLY
-  the relevant facial region, not the full face.
--->
-<div class="overflow-hidden" style="width:{size}px;height:{size}px">
-  <img
-    src={svgDataUri}
-    alt={option}
-    style="width:100%;height:100%;object-fit:cover;transform:scale(2);transform-origin:{origin}"
-  />
-</div>
+<img
+  src={svgDataUri}
+  alt={option}
+  style="width:{size}px;height:{size}px"
+  class="block"
+/>
