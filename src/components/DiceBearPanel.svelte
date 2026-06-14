@@ -21,6 +21,7 @@
     isColorParam,
   } from '../config/dicebear'
   import DiceBearAvatar from './DiceBearAvatar.svelte'
+  import DiceBearPart from './DiceBearPart.svelte'
 
   interface Props {
     /** Currently selected style key. */
@@ -292,10 +293,10 @@
                                 title={opt}
                               >
                                 <div class="w-8 h-8 rounded overflow-hidden {selected ? 'ring-2 ring-blue-500' : 'ring-1 ring-blue-100'}">
-                                  <DiceBearAvatar
+                                  <DiceBearPart
                                     style={currentStyle}
-                                    params={{ ...editMale, [key]: [opt] }}
-                                    seed={`m-${key}-${opt}`}
+                                    component={key}
+                                    option={opt}
                                     size={thumbSize}
                                   />
                                 </div>
@@ -358,10 +359,10 @@
                                 title={opt}
                               >
                                 <div class="w-8 h-8 rounded overflow-hidden {selected ? 'ring-2 ring-pink-500' : 'ring-1 ring-pink-100'}">
-                                  <DiceBearAvatar
+                                  <DiceBearPart
                                     style={currentStyle}
-                                    params={{ ...editFemale, [key]: [opt] }}
-                                    seed={`f-${key}-${opt}`}
+                                    component={key}
+                                    option={opt}
                                     size={thumbSize}
                                   />
                                 </div>
