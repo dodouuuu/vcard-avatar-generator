@@ -6,8 +6,8 @@
   import AvatarCfg from '../components/AvatarCfg.svelte'
   import AvatarImg from '../components/AvatarImg.svelte'
   import { buildGenderConfig, DEFAULT_COMMON } from '../config/dicebear'
-  import { generateVcf } from '../utils/contact-writer'
   import { type Contact, Gender } from '../types'
+  import { generateVcf } from '../utils/contact-writer'
 
   interface Props {
     data: { contacts: Contact[] } | null
@@ -18,6 +18,9 @@
 
   let contacts = $state<Contact[]>(pageData?.contacts ?? [])
 
+  /**
+   *
+   */
   function handleBack() {
     onNavigate('upload')
   }
@@ -50,7 +53,11 @@
     femaleConfig = buildGenderConfig(props, 'female')
   })
 
-  // -- Build params for a contact --
+  /**
+   * Build DiceBear params for a given gender
+   * @param gender
+   * @returns merged config object for avatar rendering
+   */
   function configForGender(gender: Gender): Record<string, string | string[] | boolean | number> {
     const genderCfg = gender === Gender.F ? femaleConfig : maleConfig
     const common: Record<string, unknown> = { ...commonConfig }
@@ -74,7 +81,9 @@
 
   const sortedContacts = $derived.by(() => {
     const key = sortKey
-    if (!key) return contacts
+    if (!key) {
+      return contacts
+    }
     return [...contacts].sort((a, b) => {
       const aVal = String(a[key] ?? '')
       const bVal = String(b[key] ?? '')
@@ -83,6 +92,10 @@
     })
   })
 
+  /**
+   *
+   * @param key
+   */
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
       sortDir = sortDir === 'asc' ? 'desc' : 'asc'
@@ -92,25 +105,47 @@
     }
   }
 
+  /**
+   * Get sort direction icon
+   * @param key
+   * @returns icon name string
+   */
   function sortIcon(key: SortKey) {
-    if (sortKey !== key) return 'line-md:arrows-vertical'
+    if (sortKey !== key) {
+      return 'line-md:arrows-vertical'
+    }
     return sortDir === 'asc' ? 'line-md:arrow-up' : 'line-md:arrow-down'
   }
 
   // -- Avatar regeneration --
   let regenerationSeeds = new SvelteMap<number, string>()
 
+  /**
+   * Get current seed for a contact avatar
+   * @param contactIdx
+   * @returns seed string
+   */
   function getSeed(contactIdx: number): string {
     return regenerationSeeds.get(contactIdx) ?? contacts[contactIdx]?.fn ?? 'default'
   }
 
-  function handleAvatarClick(contactIdx: number, contact: Contact) {
+  /**
+   *
+   * @param contactIdx
+   */
+  function handleAvatarClick(contactIdx: number) {
     const newSeed = `r${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
     const updated = new SvelteMap(regenerationSeeds)
     updated.set(contactIdx, newSeed)
     regenerationSeeds = updated
   }
 
+  /**
+   *
+   * @param common
+   * @param male
+   * @param female
+   */
   function handleApplyConfig(
     common: Record<string, string>,
     male: Record<string, string[]>,
@@ -121,6 +156,9 @@
     femaleConfig = female
   }
 
+  /**
+   *
+   */
   function handleRegenerateAll() {
     const updated = new SvelteMap<number, string>()
     for (let i = 0; i < contacts.length; i++) {
@@ -129,10 +167,16 @@
     regenerationSeeds = updated
   }
 
+  /**
+   *
+   */
   function handleClosePanel() {
     showPanel = false
   }
 
+  /**
+   *
+   */
   function handleDownload() {
     const vcf = generateVcf(contacts)
     const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' })
@@ -150,7 +194,11 @@
   <div class="sticky-top mb-6 rounded-[18px] border-2 border-border bg-surface">
     <!-- Title row: back + title + count, flush left -->
     <div class="flex items-center gap-1 pt-4 pb-3 pl-0 pr-4">
-      <button class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-text/60 hover:text-text" onclick={handleBack} aria-label="返回上传">
+      <button
+        class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-text/60 hover:text-text"
+        onclick={handleBack}
+        aria-label="返回上传"
+      >
         <Icon icon="line-md:arrow-left-twotone" class="h-4 w-4" />
       </button>
       <h2 class="text-lg font-bold">联系人编辑</h2>
@@ -193,9 +241,7 @@
           <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
           重新生成
         </button>
-        <button class="btn btn-ghost btn-xs" onclick={handleDownload}>
-          下载通讯录
-        </button>
+        <button class="btn btn-ghost btn-xs" onclick={handleDownload}> 下载通讯录 </button>
       </div>
       <button class="btn btn-ghost btn-xs gap-1" onclick={() => (showPanel = true)}>
         <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
@@ -244,18 +290,10 @@
         {#each sortedContacts as contact, contactIdx (contactIdx)}
           <tr>
             <td class="min-w-20">
-              <input
-                class="input-cartoon"
-                bind:value={contact.familyName}
-                placeholder="姓"
-              />
+              <input class="input-cartoon" bind:value={contact.familyName} placeholder="姓" />
             </td>
             <td class="min-w-20">
-              <input
-                class="input-cartoon"
-                bind:value={contact.givenName}
-                placeholder="名"
-              />
+              <input class="input-cartoon" bind:value={contact.givenName} placeholder="名" />
             </td>
             <td class="min-w-28">
               <input class="input-cartoon" bind:value={contact.fn} placeholder="姓名" />
@@ -286,7 +324,7 @@
                 class="cursor-pointer border-none bg-transparent p-0"
                 title="点击重新生成头像"
                 aria-label="重新生成头像"
-                onclick={() => handleAvatarClick(contactIdx, contact)}
+                onclick={() => handleAvatarClick(contactIdx)}
               >
                 <div class="w-10">
                   <AvatarImg

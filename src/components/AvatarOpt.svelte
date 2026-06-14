@@ -28,6 +28,12 @@
 
   const thumbBg = '#d4d4d4'
 
+  /**
+   * Build params that only set the given component, for isolated preview
+   * @param targetKey
+   * @param targetValue
+   * @returns params with only the target component enabled
+   */
   function isolateParams(targetKey: string, targetValue: string): Record<string, string[]> {
     const params: Record<string, string[]> = {}
     for (const k of allComponentKeys) {
@@ -37,8 +43,15 @@
     return params
   }
 
+  /**
+   * Convert a color value to hex string
+   * @param val
+   * @returns hex color string
+   */
   function hexColor(val: string): string {
-    if (val === 'transparent') return 'transparent'
+    if (val === 'transparent') {
+      return 'transparent'
+    }
     return val.startsWith('#') ? val : '#' + val
   }
 </script>
@@ -87,9 +100,7 @@
         <button
           type="button"
           class="h-9 w-9 cursor-pointer rounded-full border-2 transition-all
-            {isSelected
-            ? 'scale-110 border-primary'
-            : 'border-border/40 hover:border-border'}"
+            {isSelected ? 'scale-110 border-primary' : 'border-border/40 hover:border-border'}"
           style="background:{color}"
           onclick={() => onToggle(paramKey, opt)}
           title={color}
