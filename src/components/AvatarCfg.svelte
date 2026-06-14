@@ -2,10 +2,9 @@
   /**
    * DiceBear config panel modal.
    *
-   * daisyUI `<dialog>` for configuring DiceBear avatar parameters.
-   * All style-specific options are read from @dicebear/collection schemas at runtime.
+   * Lazy-loads @dicebear/collection schemas via dynamic import
+   * instead of bundling them in the main chunk.
    */
-  import * as collection from '@dicebear/collection'
   import Icon from '@iconify/svelte'
 
   import type { SchemaProp } from '../config/dicebear'
@@ -49,11 +48,20 @@
 
   let dialogEl: HTMLDialogElement | undefined = $state()
 
+  // Lazy-loaded collection module — only fetched when panel opens
+  let collectionModule = $state<Record<string, object> | null>(null)
+
   let schemaProps = $derived.by(() => {
-    const entry = (
-      collection as Record<string, { schema?: { properties?: Record<string, unknown> } }>
-    )[currentStyle]
-    if (!entry?.schema?.properties) return {}
+    const coll = collectionModule
+    if (!coll) {
+      return {} as Record<string, SchemaProp>
+    }
+    const entry = (coll as Record<string, { schema?: { properties?: Record<string, unknown> } }>)[
+      currentStyle
+    ]
+    if (!entry?.schema?.properties) {
+      return {} as Record<string, SchemaProp>
+    }
     return entry.schema.properties as Record<string, SchemaProp>
   })
 
@@ -70,8 +78,20 @@
     return keys
   })
 
+  // Load collection when panel opens
   $effect(() => {
-    if (!dialogEl || !showPanel) return
+    if (!showPanel) {
+      return
+    }
+    import('@dicebear/collection').then((mod) => {
+      collectionModule = mod as unknown as Record<string, object>
+    })
+  })
+
+  $effect(() => {
+    if (!dialogEl || !showPanel) {
+      return
+    }
     editCommon = { ...commonConfig }
     editMale =
       Object.keys(maleConfig).length > 0
@@ -84,7 +104,9 @@
   })
 
   $effect(() => {
-    if (!dialogEl) return
+    if (!dialogEl) {
+      return
+    }
     if (showPanel) {
       dialogEl.showModal()
     } else {
@@ -92,15 +114,27 @@
     }
   })
 
+  /**
+   *
+   */
   function handleCancel() {
     onClose()
   }
 
+  /**
+   *
+   */
   function handleApply() {
     onApply({ ...editCommon }, { ...editMale }, { ...editFemale })
     onClose()
   }
 
+  /**
+   *
+   * @param gender
+   * @param key
+   * @param value
+   */
   function toggleGender(gender: 'male' | 'female', key: string, value: string) {
     const source = gender === 'male' ? editMale : editFemale
     const current = source[key] ?? []
@@ -114,16 +148,27 @@
     }
   }
 
+  /**
+   *
+   * @param key
+   * @param value
+   */
   function setCommon(key: string, value: string) {
     editCommon = { ...editCommon, [key]: value }
   }
 
+  /**
+   *
+   */
   function resetDefaults() {
     editCommon = { ...DEFAULT_COMMON }
     editMale = buildGenderConfig(schemaProps, 'male')
     editFemale = buildGenderConfig(schemaProps, 'female')
   }
 
+  /**
+   *
+   */
   function onNativeClose() {
     if (showPanel) {
       onClose()
@@ -236,7 +281,9 @@
         </section>
       {/snippet}
 
-      {#if maleParams.length > 0 || femaleParams.length > 0}
+      {#if !collectionModule}
+        <div class="flex items-center justify-center py-8 text-text/50">加载风格配置中...</div>
+      {:else if maleParams.length > 0 || femaleParams.length > 0}
         <div
           class="grid grid-cols-1 gap-6 {maleParams.length > 0 && femaleParams.length > 0
             ? 'md:grid-cols-2'

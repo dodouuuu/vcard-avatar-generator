@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as collection from '@dicebear/collection'
   import Icon from '@iconify/svelte'
   import { SvelteMap } from 'svelte/reactivity'
 
   import AvatarCfg from '../components/AvatarCfg.svelte'
   import AvatarImg from '../components/AvatarImg.svelte'
-  import { buildGenderConfig, DEFAULT_COMMON } from '../config/dicebear'
+  import { DEFAULT_COMMON } from '../config/dicebear'
+  import { STYLE_NAMES } from '../config/styles'
   import { type Contact, Gender } from '../types'
   import { generateVcf } from '../utils/contact-writer'
 
@@ -25,12 +25,8 @@
     onNavigate('upload')
   }
 
-  // -- Style list from @dicebear/collection --
-  let styleKeys = $derived(
-    Object.keys(collection).filter(
-      (k) => typeof (collection as Record<string, unknown>)[k] === 'object',
-    ),
-  )
+  // -- Style list --
+  let styleKeys = STYLE_NAMES
 
   // -- DiceBear state --
   let currentStyle = $state(styleKeys[0] ?? 'avataaars')
@@ -38,20 +34,6 @@
   let maleConfig = $state<Record<string, string[]>>({})
   let femaleConfig = $state<Record<string, string[]>>({})
   let showPanel = $state(false)
-
-  // Initialize gender defaults when style changes
-  $effect(() => {
-    const style = currentStyle
-    const entry = (
-      collection as Record<string, { schema?: { properties?: Record<string, unknown> } }>
-    )[style]
-    const props = (entry?.schema?.properties ?? {}) as Record<
-      string,
-      { type?: string; items?: { enum?: string[] }; default?: unknown }
-    >
-    maleConfig = buildGenderConfig(props, 'male')
-    femaleConfig = buildGenderConfig(props, 'female')
-  })
 
   /**
    * Build DiceBear params for a given gender
@@ -79,6 +61,10 @@
   let sortKey = $state<SortKey>(null)
   let sortDir = $state<'asc' | 'desc'>('asc')
 
+  /**
+   * Sorted contacts with cached sort state
+   * @returns sorted contacts array
+   */
   const sortedContacts = $derived.by(() => {
     const key = sortKey
     if (!key) {
@@ -121,8 +107,8 @@
   let regenerationSeeds = new SvelteMap<number, string>()
 
   /**
-   * Get current seed for a contact avatar
-   * @param contactIdx
+   * Get seed for a contact avatar
+   * @param contactIdx - contact index
    * @returns seed string
    */
   function getSeed(contactIdx: number): string {
@@ -130,8 +116,9 @@
   }
 
   /**
-   *
-   * @param contactIdx
+   * Regenerate avatar for a contact
+   * @param contactIdx - contact index
+   * @returns void
    */
   function handleAvatarClick(contactIdx: number) {
     const newSeed = `r${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
@@ -141,10 +128,11 @@
   }
 
   /**
-   *
+   * Apply config changes from the panel
    * @param common
    * @param male
    * @param female
+   * @returns void
    */
   function handleApplyConfig(
     common: Record<string, string>,
