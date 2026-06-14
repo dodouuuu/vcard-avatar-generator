@@ -16,9 +16,6 @@
     filterParams,
     buildGenderConfig,
     paramLabel,
-    categoryLabel,
-    PARAM_CATEGORIES,
-    isColorParam,
   } from '../config/dicebear'
   import DiceBearAvatar from './DiceBearAvatar.svelte'
   import DiceBearPart from './DiceBearPart.svelte'
@@ -276,59 +273,54 @@
                 <span class="text-blue-700">男士</span>
                 <span class="text-xs font-normal text-base-content/40 ml-auto">{maleParams.length} 项</span>
               </h4>
-              <div class="space-y-4">
-                {#each [...groupByCategory(maleParams)] as [cat, entries] (cat)}
-                  <div class="p-3 rounded-lg bg-blue-50/30 border border-blue-100">
-                    <div class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-2">{categoryLabel(cat)}</div>
-                    {#each entries as [key, prop] (key)}
-                      {@const values = editMale[key] ?? []}
-                      {@const enumVals = getEnumValues(prop)}
-                      {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
-                      {#if enumVals.length > 0}
-                      <div class="mb-2 last:mb-0">
-                        <div class="text-xs text-blue-600/70 mb-1 font-medium flex items-center gap-1">
-                          {paramLabel(key)}
-                          <span class="text-blue-300 text-[9px] font-normal">({enumVals.length})</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                          {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
-                            {@const selected = values.includes(opt)}
-                            {#if isColorStyle}
-                              <button
-                                type="button"
-                                class="w-6 h-6 rounded-full cursor-pointer border transition-all shrink-0 {selected ? 'border-blue-500 ring-2 ring-blue-200 scale-110' : 'border-blue-200 hover:border-blue-400'}"
-                                style="background:{opt}"
-                                onclick={() => toggleMale(key, opt)}
-                                title={opt}
-                              ></button>
-                            {:else}
-                              <button
-                                class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all shrink-0 {selected ? 'bg-blue-100 ring-1 ring-blue-300' : 'hover:bg-blue-50'}"
-                                onclick={() => toggleMale(key, opt)}
-                                title={opt}
-                              >
-                                <div class="w-8 h-8 rounded overflow-hidden {selected ? 'ring-2 ring-blue-500' : 'ring-1 ring-blue-100'}">
-                                  <DiceBearPart
-                                    style={currentStyle}
-                                    component={key}
-                                    option={opt}
-                                    size={thumbSize}
-                                  />
-                                </div>
-                                <span class="text-[8px] text-blue-600 truncate max-w-10 leading-tight">{opt}</span>
-                              </button>
-                            {/if}
-                          {/each}
-                          {#if !isColorStyle && enumVals.length > 8}
-                            <span class="w-8 h-8 flex items-center justify-center text-xs text-blue-300 font-medium shrink-0">
-                              +{enumVals.length - 8}
-                            </span>
-                          {/if}
-                        </div>
+              <div class="space-y-3">
+                {#each maleParams as [key, prop] (key)}
+                  {@const values = editMale[key] ?? []}
+                  {@const enumVals = getEnumValues(prop)}
+                  {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+                  {#if enumVals.length > 0}
+                    <div>
+                      <div class="text-xs text-blue-600/70 mb-1 font-medium flex items-center gap-1">
+                        {paramLabel(key)}
+                        <span class="text-blue-300 text-[9px] font-normal">({enumVals.length})</span>
                       </div>
-                    {/if}
-                    {/each}
-                  </div>
+                      <div class="flex flex-wrap gap-1">
+                        {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
+                          {@const selected = values.includes(opt)}
+                          {#if isColorStyle}
+                            <button
+                              type="button"
+                              class="w-6 h-6 rounded-full cursor-pointer border transition-all shrink-0 {selected ? 'border-blue-500 ring-2 ring-blue-200 scale-110' : 'border-blue-200 hover:border-blue-400'}"
+                              style="background:{opt}"
+                              onclick={() => toggleMale(key, opt)}
+                              title={opt}
+                            ></button>
+                          {:else}
+                            <button
+                              class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all shrink-0 {selected ? 'bg-blue-100 ring-1 ring-blue-300' : 'hover:bg-blue-50'}"
+                              onclick={() => toggleMale(key, opt)}
+                              title={opt}
+                            >
+                              <div class="w-8 h-8 overflow-hidden {selected ? 'ring-2 ring-blue-500' : 'ring-1 ring-blue-100'}">
+                                <DiceBearPart
+                                  style={currentStyle}
+                                  component={key}
+                                  option={opt}
+                                  size={thumbSize}
+                                />
+                              </div>
+                              <span class="text-[8px] text-blue-600 truncate max-w-10 leading-tight">{opt}</span>
+                            </button>
+                          {/if}
+                        {/each}
+                        {#if !isColorStyle && enumVals.length > 8}
+                          <span class="w-8 h-8 flex items-center justify-center text-xs text-blue-300 font-medium shrink-0">
+                            +{enumVals.length - 8}
+                          </span>
+                        {/if}
+                      </div>
+                    </div>
+                  {/if}
                 {/each}
               </div>
             </section>
@@ -344,59 +336,54 @@
                 <span class="text-pink-700">女士</span>
                 <span class="text-xs font-normal text-base-content/40 ml-auto">{femaleParams.length} 项</span>
               </h4>
-              <div class="space-y-4">
-                {#each [...groupByCategory(femaleParams)] as [cat, entries] (cat)}
-                  <div class="p-3 rounded-lg bg-pink-50/30 border border-pink-100">
-                    <div class="text-[10px] font-semibold text-pink-400 uppercase tracking-wider mb-2">{categoryLabel(cat)}</div>
-                    {#each entries as [key, prop] (key)}
-                      {@const values = editFemale[key] ?? []}
-                      {@const enumVals = getEnumValues(prop)}
-                      {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
-                      {#if enumVals.length > 0}
-                      <div class="mb-2 last:mb-0">
-                        <div class="text-xs text-pink-600/70 mb-1 font-medium flex items-center gap-1">
-                          {paramLabel(key)}
-                          <span class="text-pink-300 text-[9px] font-normal">({enumVals.length})</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                          {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
-                            {@const selected = values.includes(opt)}
-                            {#if isColorStyle}
-                              <button
-                                type="button"
-                                class="w-6 h-6 rounded-full cursor-pointer border transition-all shrink-0 {selected ? 'border-pink-500 ring-2 ring-pink-200 scale-110' : 'border-pink-200 hover:border-pink-400'}"
-                                style="background:{opt}"
-                                onclick={() => toggleFemale(key, opt)}
-                                title={opt}
-                              ></button>
-                            {:else}
-                              <button
-                                class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all shrink-0 {selected ? 'bg-pink-100 ring-1 ring-pink-300' : 'hover:bg-pink-50'}"
-                                onclick={() => toggleFemale(key, opt)}
-                                title={opt}
-                              >
-                                <div class="w-8 h-8 rounded overflow-hidden {selected ? 'ring-2 ring-pink-500' : 'ring-1 ring-pink-100'}">
-                                  <DiceBearPart
-                                    style={currentStyle}
-                                    component={key}
-                                    option={opt}
-                                    size={thumbSize}
-                                  />
-                                </div>
-                                <span class="text-[8px] text-pink-600 truncate max-w-10 leading-tight">{opt}</span>
-                              </button>
-                            {/if}
-                          {/each}
-                          {#if !isColorStyle && enumVals.length > 8}
-                            <span class="w-8 h-8 flex items-center justify-center text-xs text-pink-300 font-medium shrink-0">
-                              +{enumVals.length - 8}
-                            </span>
-                          {/if}
-                        </div>
+              <div class="space-y-3">
+                {#each femaleParams as [key, prop] (key)}
+                  {@const values = editFemale[key] ?? []}
+                  {@const enumVals = getEnumValues(prop)}
+                  {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+                  {#if enumVals.length > 0}
+                    <div>
+                      <div class="text-xs text-pink-600/70 mb-1 font-medium flex items-center gap-1">
+                        {paramLabel(key)}
+                        <span class="text-pink-300 text-[9px] font-normal">({enumVals.length})</span>
                       </div>
-                    {/if}
-                    {/each}
-                  </div>
+                      <div class="flex flex-wrap gap-1">
+                        {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
+                          {@const selected = values.includes(opt)}
+                          {#if isColorStyle}
+                            <button
+                              type="button"
+                              class="w-6 h-6 rounded-full cursor-pointer border transition-all shrink-0 {selected ? 'border-pink-500 ring-2 ring-pink-200 scale-110' : 'border-pink-200 hover:border-pink-400'}"
+                              style="background:{opt}"
+                              onclick={() => toggleFemale(key, opt)}
+                              title={opt}
+                            ></button>
+                          {:else}
+                            <button
+                              class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all shrink-0 {selected ? 'bg-pink-100 ring-1 ring-pink-300' : 'hover:bg-pink-50'}"
+                              onclick={() => toggleFemale(key, opt)}
+                              title={opt}
+                            >
+                              <div class="w-8 h-8 overflow-hidden {selected ? 'ring-2 ring-pink-500' : 'ring-1 ring-pink-100'}">
+                                <DiceBearPart
+                                  style={currentStyle}
+                                  component={key}
+                                  option={opt}
+                                  size={thumbSize}
+                                />
+                              </div>
+                              <span class="text-[8px] text-pink-600 truncate max-w-10 leading-tight">{opt}</span>
+                            </button>
+                          {/if}
+                        {/each}
+                        {#if !isColorStyle && enumVals.length > 8}
+                          <span class="w-8 h-8 flex items-center justify-center text-xs text-pink-300 font-medium shrink-0">
+                            +{enumVals.length - 8}
+                          </span>
+                        {/if}
+                      </div>
+                    </div>
+                  {/if}
                 {/each}
               </div>
             </section>

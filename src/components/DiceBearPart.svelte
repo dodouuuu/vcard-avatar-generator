@@ -2,57 +2,54 @@
   /**
    * DiceBear isolated component preview.
    *
-   * Renders a DiceBear avatar with ONLY one specific param set,
-   * then uses CSS zoom to show JUST that facial region.
-   * The trick: render the SVG at 2x container size,
-   * then `object-fit: cover` crops to the relevant area.
+   * Renders ONLY one specific facial feature by zooming into the
+   * relevant region using CSS transform:scale + transform-origin.
    */
   import * as collection from '@dicebear/collection'
   import { createAvatar } from '@dicebear/core'
 
   interface Props {
-    /** Style key. */
     style: string
-    /** Component group name (e.g. 'eyes', 'eyebrows', 'mouth'). */
     component: string
-    /** Specific option variant name. */
     option: string
-    /** Display size in pixels. */
     size?: number
   }
 
   let { style, component, option, size = 32 }: Props = $props()
 
   /**
-   * Focus positions for each component, as percentage for object-position.
+   * Transform-origin for each component (percentage).
+   * Controls which point of the avatar is centered when zoomed in.
    */
   const FOCUS: Record<string, string> = {
-    eyebrows: '50% 31%',
+    eyebrows: '50% 28%',
     eyes: '50% 36%',
-    nose: '50% 44%',
+    nose: '50% 45%',
     mouth: '50% 52%',
     lips: '50% 52%',
     top: '50% 18%',
     hair: '50% 18%',
-    head: '50% 38%',
-    glasses: '50% 33%',
-    earrings: '50% 36%',
+    head: '50% 40%',
+    glasses: '50% 32%',
+    earrings: '50% 35%',
     facialHair: '50% 58%',
     beard: '50% 58%',
-    clothing: '50% 72%',
-    shirt: '50% 72%',
-    body: '50% 48%',
+    clothing: '50% 75%',
+    shirt: '50% 75%',
+    body: '50% 50%',
     face: '50% 40%',
     accessories: '50% 30%',
-    features: '50% 38%',
-    skinColor: '50% 42%',
-    hairColor: '50% 28%',
-    clothesColor: '50% 72%',
+    features: '50% 40%',
+    skinColor: '50% 40%',
+    hairColor: '50% 25%',
+    clothesColor: '50% 75%',
+    hatColor: '50% 15%',
+    accessoriesColor: '50% 30%',
+    facialHairColor: '50% 58%',
   }
 
-  let focus = $derived(FOCUS[component] ?? '50% 40%')
+  let origin = $derived(FOCUS[component] ?? '50% 40%')
 
-  /** Internal render size (larger = better zoom quality). */
   const renderSize = 280
 
   function renderSvg(): string {
@@ -89,14 +86,14 @@
 </script>
 
 <!--
-  Zoom trick: img is rendered at 2x container size,
-  object-fit:cover crops it, object-position controls the focus area.
-  This effectively zooms into the facial region.
+  Zoom trick: scale(2) with transform-origin pointing to the feature area.
+  The container clips everything outside. This effectively shows ONLY
+  the relevant facial region, not the full face.
 -->
 <div class="overflow-hidden" style="width:{size}px;height:{size}px">
   <img
     src={svgDataUri}
     alt={option}
-    style="width:{size * 2}px;height:{size * 2}px;object-fit:cover;object-position:{focus};max-width:none"
+    style="width:100%;height:100%;object-fit:cover;transform:scale(2);transform-origin:{origin}"
   />
 </div>
