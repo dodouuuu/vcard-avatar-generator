@@ -6,6 +6,7 @@
   import AvatarCfg from '../components/AvatarCfg.svelte'
   import AvatarImg from '../components/AvatarImg.svelte'
   import { buildGenderConfig, DEFAULT_COMMON } from '../config/dicebear'
+  import { generateVcf } from '../utils/contact-writer'
   import { type Contact, Gender } from '../types'
 
   interface Props {
@@ -48,20 +49,6 @@
     maleConfig = buildGenderConfig(props, 'male')
     femaleConfig = buildGenderConfig(props, 'female')
   })
-
-  // -- Toast --
-  let toastMsg = $state('')
-  let toastVisible = $state(false)
-  let toastTimer: ReturnType<typeof setTimeout> | undefined = $state()
-
-  function showToast(msg: string) {
-    toastMsg = msg
-    toastVisible = true
-    clearTimeout(toastTimer)
-    toastTimer = setTimeout(() => {
-      toastVisible = false
-    }, 2000)
-  }
 
   // -- Build params for a contact --
   function configForGender(gender: Gender): Record<string, string | string[] | boolean | number> {
@@ -122,7 +109,6 @@
     const updated = new SvelteMap(regenerationSeeds)
     updated.set(contactIdx, newSeed)
     regenerationSeeds = updated
-    showToast(`已重新生成 ${contact.fn} 的头像`)
   }
 
   function handleApplyConfig(
@@ -133,7 +119,6 @@
     commonConfig = common
     maleConfig = male
     femaleConfig = female
-    showToast('配置已保存')
   }
 
   function handleRegenerateAll() {
@@ -142,61 +127,76 @@
       updated.set(i, `r${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
     }
     regenerationSeeds = updated
-    showToast(`已重新生成全部 ${contacts.length} 个头像`)
   }
 
   function handleClosePanel() {
     showPanel = false
   }
+
+  function handleDownload() {
+    const vcf = generateVcf(contacts)
+    const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'contacts.vcf'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 </script>
 
-<div class="flex flex-1 flex-col px-6 pb-6">
-  <!-- Header -->
-  <div class="mb-3 flex items-center gap-4 pt-6">
-    <button class="btn btn-ghost btn-square" onclick={handleBack} aria-label="返回上传">
-      <Icon icon="line-md:arrow-left-twotone" class="h-6 w-6" />
-    </button>
-    <div>
-      <h2 class="text-2xl font-bold">联系人编辑</h2>
+<div class="flex flex-1 flex-col p-6">
+  <!-- Header + Style Bar: sticky -->
+  <div class="sticky-top mb-6 rounded-[18px] border-2 border-border bg-surface">
+    <!-- Title row: back + title + count, flush left -->
+    <div class="flex items-center gap-1 pt-4 pb-3 pl-0 pr-4">
+      <button class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-text/60 hover:text-text" onclick={handleBack} aria-label="返回上传">
+        <Icon icon="line-md:arrow-left-twotone" class="h-4 w-4" />
+      </button>
+      <h2 class="text-lg font-bold">联系人编辑</h2>
       {#if pageData?.contacts}
-        <p class="text-sm text-text/70">共 {pageData.contacts.length} 个联系人</p>
+        <span class="text-sm text-text/50">共 {pageData.contacts.length} 个联系人</span>
       {/if}
     </div>
-  </div>
 
-  <!-- DiceBear Style Bar -->
-  <div class="mb-3 rounded-[18px] border-2 border-border bg-surface px-4 py-3">
-    <div class="mb-2 flex items-center gap-2">
-      <span class="text-xs font-semibold uppercase tracking-wider text-text/60">🎨 头像风格</span>
-      <span class="text-[10px] text-text/40">从 @dicebear/collection 动态读取</span>
+    <!-- Style bar (no label) -->
+    <div class="px-4 pb-3">
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        {#each styleKeys as key (key)}
+          <button
+            class="flex shrink-0 flex-col items-center border-2 transition-all cursor-pointer
+              {key === currentStyle
+              ? 'border-primary bg-primary/10'
+              : 'border-transparent hover:border-text/20'}"
+            onclick={() => (currentStyle = key)}
+            title={key}
+          >
+            <div class="h-10 w-10 overflow-hidden rounded-none">
+              <AvatarImg style={key} params={{}} size={40} seed={key} />
+            </div>
+          </button>
+        {/each}
+      </div>
     </div>
-    <div class="flex gap-2 overflow-x-auto pb-1">
-      {#each styleKeys as key (key)}
-        <button
-          class="flex shrink-0 w-16 flex-col items-center gap-0.5 rounded-[18px] border-2 p-1.5 transition-all
-            {key === currentStyle
-            ? 'border-primary bg-primary/10'
-            : 'border-transparent hover:border-text/20'}"
-          onclick={() => (currentStyle = key)}
-          title={key}
-        >
-          <div class="h-10 w-10 overflow-hidden border-2 border-border bg-surface">
-            <AvatarImg style={key} params={{}} size={40} seed={key} />
-          </div>
-          <span class="w-full truncate text-center text-[10px] text-text/60">{key}</span>
+
+    <!-- Divider -->
+    <div class="mx-4 border-t-2 border-border"></div>
+
+    <!-- Button row: left group + right "风格配置" -->
+    <div class="flex items-center justify-between px-4 pb-4 pt-3">
+      <div class="flex items-center gap-2">
+        <button class="btn btn-ghost btn-xs gap-1" onclick={handleBack}>
+          <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
+          重新上传
         </button>
-      {/each}
-    </div>
-    <div class="mt-1 flex items-center gap-2 border-t-2 border-border pt-1.5">
-      <button class="btn btn-ghost btn-xs gap-1" onclick={handleBack}>
-        <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
-        重新上传
-      </button>
-      <button class="btn btn-ghost btn-xs gap-1" onclick={handleRegenerateAll}>
-        <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
-        重新生成
-      </button>
-      <span class="flex-1"></span>
+        <button class="btn btn-ghost btn-xs gap-1" onclick={handleRegenerateAll}>
+          <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
+          重新生成
+        </button>
+        <button class="btn btn-ghost btn-xs" onclick={handleDownload}>
+          下载通讯录
+        </button>
+      </div>
       <button class="btn btn-ghost btn-xs gap-1" onclick={() => (showPanel = true)}>
         <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
         风格配置
@@ -315,13 +315,3 @@
   onApply={handleApplyConfig}
   onClose={handleClosePanel}
 />
-
-<!-- Toast -->
-{#if toastVisible}
-  <div class="toast toast-top toast-end">
-    <div class="alert">
-      <Icon icon="line-md:confirm-twotone" class="h-4 w-4" />
-      <span>{toastMsg}</span>
-    </div>
-  </div>
-{/if}

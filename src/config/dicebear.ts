@@ -97,10 +97,10 @@ export type SchemaProp = {
 // -- Gender-specific param groups --
 
 /** Param keys that are male-only features. */
-const MALE_ONLY_KEYS = new Set(['facialHair', 'beard', 'facialHairColor'])
+const MALE_ONLY_KEYS = new Set<string>()
 
 /** Param keys that are female-only features. */
-const FEMALE_ONLY_KEYS = new Set(['lipColor'])
+const FEMALE_ONLY_KEYS = new Set<string>()
 
 /** Param keys that are internal / noise — always skipped. */
 const NOISE_KEYS = new Set(['base', 'style'])

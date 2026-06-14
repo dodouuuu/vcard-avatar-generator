@@ -24,7 +24,7 @@
   const kind = $derived(classifyParam(paramKey, schemaProp))
   const enumVals = $derived(getEnumValues(schemaProp))
   const colorVals = $derived(kind === 'color' ? enumVals : [])
-  const thumbSize = 32
+  const thumbSize = 48
 
   const thumbBg = '#d4d4d4'
 
@@ -45,22 +45,22 @@
 
 {#if kind === 'component' && enumVals.length > 0}
   <div>
-    <div class="mb-1 flex items-center gap-1 text-xs font-medium text-text/70">
+    <div class="mb-1.5 flex items-center gap-1 text-sm font-medium text-text/80">
       {paramLabel(paramKey)}
-      <span class="text-[9px] font-normal opacity-50">({enumVals.length})</span>
+      <span class="text-[10px] font-normal opacity-50">({enumVals.length})</span>
     </div>
-    <div class="flex flex-wrap gap-1">
+    <div class="grid grid-cols-[repeat(auto-fill,52px)] justify-center gap-1.5">
       {#each enumVals as opt (opt)}
         {@const isSelected = selected.includes(opt)}
         <button
-          class="shrink-0 cursor-pointer rounded-[18px] border-2 p-0.5 transition-all
+          class="cursor-pointer border-2 transition-all
             {isSelected
             ? 'border-primary bg-primary/10'
             : 'border-transparent hover:border-text/20'}"
           onclick={() => onToggle(paramKey, opt)}
           title={opt}
         >
-          <div class="h-8 w-8 overflow-hidden rounded-[14px]">
+          <div class="h-12 w-12 overflow-hidden">
             <AvatarImg
               {style}
               params={isolateParams(paramKey, opt)}
@@ -76,17 +76,17 @@
 
 {#if kind === 'color' && colorVals.length > 0}
   <div>
-    <div class="mb-1 flex items-center gap-1 text-xs font-medium text-text/70">
+    <div class="mb-1.5 flex items-center gap-1 text-sm font-medium text-text/80">
       {paramLabel(paramKey)}
-      <span class="text-[9px] font-normal opacity-50">({colorVals.length})</span>
+      <span class="text-[10px] font-normal opacity-50">({colorVals.length})</span>
     </div>
-    <div class="flex flex-wrap gap-1">
+    <div class="grid grid-cols-[repeat(auto-fill,40px)] justify-center gap-1">
       {#each colorVals as opt (opt)}
         {@const isSelected = selected.includes(opt)}
         {@const color = hexColor(opt)}
         <button
           type="button"
-          class="h-6 w-6 shrink-0 cursor-pointer rounded-full border-2 transition-all
+          class="h-9 w-9 cursor-pointer rounded-full border-2 transition-all
             {isSelected
             ? 'scale-110 border-primary'
             : 'border-border/40 hover:border-border'}"

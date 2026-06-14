@@ -160,7 +160,7 @@
             <div>
               <div class="mb-1.5 text-xs font-medium text-text/60">{opt.label}</div>
               {#if opt.type === 'color'}
-                <div class="flex flex-wrap gap-1">
+                <div class="grid grid-cols-[repeat(auto-fill,28px)] justify-center gap-1">
                   {#each opt.options ?? [] as o (o.value)}
                     {@const isTransparent = o.value === 'transparent'}
                     <button
@@ -178,7 +178,7 @@
                   {/each}
                 </div>
               {:else if opt.type === 'toggle'}
-                <div class="flex gap-1">
+                <div class="flex justify-center gap-1">
                   <button
                     class="btn btn-xs {val === 'false' ? 'btn-primary' : 'btn-ghost'}"
                     onclick={() => setCommon(key, 'false')}
@@ -193,7 +193,7 @@
                   </button>
                 </div>
               {:else}
-                <div class="flex flex-wrap gap-1">
+                <div class="flex flex-wrap justify-center gap-1">
                   {#each opt.options ?? [] as o (o.value)}
                     <button
                       class="btn btn-xs {val === o.value ? 'btn-primary' : 'btn-ghost'}"

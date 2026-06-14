@@ -21,26 +21,26 @@ export interface AdConfig {
 export const adConfig: AdConfig = {
   left: [
     {
-      img: 'https://inews.gtimg.com/om_bt/Opc4Yf6d2RRdhQM0dGm7LAHxdWGSsrCV_qGrQI1Sr7Y3wAA/1000',
-      link: 'https://baidu.com',
-      alt: 'Ad 1',
+      img: '/vcard-avatar-generator/ad-placeholder.svg',
+      link: '#',
+      alt: '广告位',
     },
     {
-      img: 'https://inews.gtimg.com/om_bt/Opc4Yf6d2RRdhQM0dGm7LAHxdWGSsrCV_qGrQI1Sr7Y3wAA/1000',
-      link: 'https://baidu.com',
-      alt: 'Ad 1',
+      img: '/vcard-avatar-generator/ad-placeholder.svg',
+      link: '#',
+      alt: '广告位',
     },
   ],
   right: [
     {
-      img: 'https://inews.gtimg.com/om_bt/Opc4Yf6d2RRdhQM0dGm7LAHxdWGSsrCV_qGrQI1Sr7Y3wAA/1000',
-      link: 'https://baidu.com',
-      alt: 'Ad 1',
+      img: '/vcard-avatar-generator/ad-placeholder.svg',
+      link: '#',
+      alt: '广告位',
     },
     {
-      img: 'https://inews.gtimg.com/om_bt/Opc4Yf6d2RRdhQM0dGm7LAHxdWGSsrCV_qGrQI1Sr7Y3wAA/1000',
-      link: 'https://baidu.com',
-      alt: 'Ad 1',
+      img: '/vcard-avatar-generator/ad-placeholder.svg',
+      link: '#',
+      alt: '广告位',
     },
   ],
 }

@@ -7,6 +7,7 @@
  * 边框:  2px 粗线, #225555
  * 圆角:  18px 统一 (按钮、输入框、卡片全都 18px)
  * 阴影:  无
+ * 间距:  统一 24px (p-6)
  */
 @theme {
   --color-surface: #fafaee;
@@ -29,6 +30,12 @@ body {
   color: var(--color-text);
 }
 
+/* 滚动条 — 无白色背景 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
+
 /* ========== 组件级实用类 ========== */
 
 /* --- 按钮 --- */
@@ -45,6 +52,7 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 .btn:disabled {
   opacity: 0.5;
@@ -75,20 +83,25 @@ body {
   background: color-mix(in srgb, var(--color-primary-light) 20%, transparent);
 }
 
-/* 按钮尺寸 */
 .btn-xs {
   padding: 0.125rem 0.625rem;
   font-size: 0.75rem;
-  border-radius: 14px;
 }
 .btn-sm {
   padding: 0.25rem 1rem;
   font-size: 0.8125rem;
-  border-radius: 16px;
 }
 .btn-square {
   width: 2.5rem;
   padding: 0;
+}
+
+/* --- 卡片容器 --- */
+.card-cartoon {
+  border: 2px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: none;
 }
 
 /* --- 表格 --- */
@@ -98,7 +111,7 @@ body {
   border-spacing: 0;
   border: 2px solid var(--color-border);
   border-radius: 18px;
-  overflow: hidden;
+  overflow-x: auto;
   background: var(--color-surface);
 }
 .table-cartoon thead {
@@ -122,7 +135,7 @@ body {
   background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
 }
 .table-cartoon tbody tr:hover {
-  background: color-mix(in srgb, var(--color-primary-light) 15%, var(--color-surface));
+  background: none;
 }
 .table-cartoon td.sticky,
 .table-cartoon th.sticky {
@@ -133,6 +146,12 @@ body {
   box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.1);
 }
 .table-cartoon tbody tr:nth-child(even) td.sticky {
+  background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
+}
+.table-cartoon tbody tr:hover td.sticky {
+  background: var(--color-surface);
+}
+.table-cartoon tbody tr:nth-child(even):hover td.sticky {
   background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
 }
 
@@ -149,28 +168,33 @@ body {
   transition: border-color 0.15s;
 }
 .input-cartoon:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary-light) 40%, transparent);
+  border-color: var(--color-border);
 }
 
 .select-cartoon {
   width: 100%;
   border: 2px solid var(--color-border);
   border-radius: 18px;
-  padding: 0.25rem 0.625rem;
+  padding: 0.25rem 1.75rem 0.25rem 0.625rem;
   font-size: 0.75rem;
-  background: white;
+  background: white
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2351463B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")
+    no-repeat right 6px center;
+  background-size: 14px;
   color: var(--color-text);
   outline: none;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 .select-cartoon:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary-light) 40%, transparent);
+  border-color: var(--color-border);
 }
 
 /* --- 弹窗 (Modal) --- */
 .modal-cartoon {
+  margin: auto;
   max-width: 64rem;
   width: 91.666667%;
   border: 2px solid var(--color-border);
@@ -178,6 +202,8 @@ body {
   background: var(--color-surface);
   padding: 0;
   box-shadow: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
 .modal-cartoon::backdrop {
   background: rgba(0, 0, 0, 0.3);
@@ -208,4 +234,12 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   pointer-events: auto;
+}
+
+/* --- Sticky 工具类 --- */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-surface);
 }
