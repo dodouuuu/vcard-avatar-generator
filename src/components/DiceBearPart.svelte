@@ -90,7 +90,7 @@
 </script>
 
 <div
-  class="overflow-hidden rounded"
+  class="overflow-hidden"
   style="width:{size}px;height:{size}px"
 >
   <img

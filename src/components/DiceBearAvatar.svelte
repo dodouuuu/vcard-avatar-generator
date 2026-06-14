@@ -65,7 +65,7 @@
 <img
   src={svgDataUri}
   alt="头像"
-  class="object-cover w-full h-full rounded-full"
+  class="object-cover w-full h-full"
   width={size}
   height={size}
 />

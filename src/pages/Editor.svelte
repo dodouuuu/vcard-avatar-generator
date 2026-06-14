@@ -216,7 +216,7 @@
           onclick={() => (currentStyle = key)}
           title={key}
         >
-          <div class="w-10 h-10 rounded-full overflow-hidden bg-base-100 border border-base-300">
+          <div class="w-10 h-10 overflow-hidden bg-base-100 border border-base-300">
             <DiceBearAvatar style={key} params={{}} size={40} seed={key} />
           </div>
           <span class="text-[10px] text-base-content/60 truncate w-full text-center">{key}</span>
@@ -324,7 +324,7 @@
                 aria-label="重新生成头像"
                 onclick={() => handleAvatarClick(contactIdx, contact)}
               >
-                <div class="w-10 rounded-full">
+                <div class="w-10">
                   <DiceBearAvatar
                     style={currentStyle}
                     params={configForGender(contact.gender)}

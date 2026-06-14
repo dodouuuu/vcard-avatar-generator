@@ -161,8 +161,6 @@
 
   /** Preview avatar size for option thumbnails. */
   const thumbSize = 32
-  /** Preview avatar size for bottom previews. */
-  const size = 48
 </script>
 
 <dialog class="modal" bind:this={dialogEl} onclose={onNativeClose}>
@@ -386,25 +384,6 @@
         </div>
       {/if}
 
-      <!-- Combined Preview -->
-      <section class="p-4 rounded-lg bg-base-200/30 border border-base-200">
-        <h4 class="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-3">预览对比</h4>
-        <div class="flex justify-center gap-12 items-center">
-          <div class="text-center">
-            <div class="text-[10px] text-blue-600/60 mb-1.5 font-medium">男士</div>
-            <div class="w-16 h-16 rounded-full overflow-hidden bg-white border-2 border-blue-200 mx-auto shadow-sm">
-              <DiceBearAvatar style={currentStyle} params={editMale} seed="preview-m" size={64} />
-            </div>
-          </div>
-          <div class="w-px h-16 bg-base-300 hidden sm:block"></div>
-          <div class="text-center">
-            <div class="text-[10px] text-pink-600/60 mb-1.5 font-medium">女士</div>
-            <div class="w-16 h-16 rounded-full overflow-hidden bg-white border-2 border-pink-200 mx-auto shadow-sm">
-              <DiceBearAvatar style={currentStyle} params={editFemale} seed="preview-f" size={64} />
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
     <!-- Footer -->
