@@ -25,16 +25,36 @@
 }
 
 /* ========== 全局基础样式 ========== */
+html {
+  overscroll-behavior: none;
+}
 body {
   background-color: var(--color-surface);
   color: var(--color-text);
+  overscroll-behavior: none;
+}
+
+/* 移动端内部滚动容器优化 */
+main {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 滚动条 — 无白色背景 */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-* { scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
 
 /* ========== 组件级实用类 ========== */
 
