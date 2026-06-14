@@ -142,7 +142,23 @@
 
   /** Check if an enum value is a hex color code. */
   function isHexColor(val: string): boolean {
-    return /^#[0-9a-f]{3,8}$/i.test(val)
+    return /^#?[0-9a-f]{3,8}$/i.test(val)
+  }
+
+  /**
+   * Get available option values for a schema property.
+   * Uses items.enum first, falls back to prop.default (for color arrays).
+   */
+  function getEnumValues(
+    prop: { type?: string; items?: { enum?: string[] }; default?: unknown },
+  ): string[] {
+    if (prop.items?.enum?.length) {
+      return prop.items.enum
+    }
+    if (Array.isArray(prop.default)) {
+      return prop.default.filter((v): v is string => typeof v === 'string')
+    }
+    return []
   }
 
   /** Group params by category. */
@@ -266,8 +282,9 @@
                     <div class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-2">{categoryLabel(cat)}</div>
                     {#each entries as [key, prop] (key)}
                       {@const values = editMale[key] ?? []}
-                      {@const enumVals = prop.items?.enum ?? []}
+                      {@const enumVals = getEnumValues(prop)}
                       {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+                      {#if enumVals.length > 0}
                       <div class="mb-2 last:mb-0">
                         <div class="text-xs text-blue-600/70 mb-1 font-medium flex items-center gap-1">
                           {paramLabel(key)}
@@ -309,6 +326,7 @@
                           {/if}
                         </div>
                       </div>
+                    {/if}
                     {/each}
                   </div>
                 {/each}
@@ -332,8 +350,9 @@
                     <div class="text-[10px] font-semibold text-pink-400 uppercase tracking-wider mb-2">{categoryLabel(cat)}</div>
                     {#each entries as [key, prop] (key)}
                       {@const values = editFemale[key] ?? []}
-                      {@const enumVals = prop.items?.enum ?? []}
+                      {@const enumVals = getEnumValues(prop)}
                       {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+                      {#if enumVals.length > 0}
                       <div class="mb-2 last:mb-0">
                         <div class="text-xs text-pink-600/70 mb-1 font-medium flex items-center gap-1">
                           {paramLabel(key)}
@@ -375,6 +394,7 @@
                           {/if}
                         </div>
                       </div>
+                    {/if}
                     {/each}
                   </div>
                 {/each}

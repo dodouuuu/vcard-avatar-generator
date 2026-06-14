@@ -3,7 +3,9 @@
    * DiceBear isolated component preview.
    *
    * Renders a DiceBear avatar with ONLY one specific param set,
-   * then uses CSS zoom/clip to show JUST that facial region.
+   * then uses CSS zoom to show JUST that facial region.
+   * The trick: render the SVG at 2x container size,
+   * then `object-fit: cover` crops to the relevant area.
    */
   import * as collection from '@dicebear/collection'
   import { createAvatar } from '@dicebear/core'
@@ -19,42 +21,39 @@
     size?: number
   }
 
-  let { style, component, option, size = 36 }: Props = $props()
+  let { style, component, option, size = 32 }: Props = $props()
 
   /**
    * Focus positions for each component, as percentage for object-position.
-   * Format: { x% y% } — where to center the crop on the full avatar.
    */
   const FOCUS: Record<string, string> = {
-    // Face features (upper → lower)
     eyebrows: '50% 31%',
     eyes: '50% 36%',
-    nose: '50% 42%',
-    mouth: '50% 50%',
-    lips: '50% 50%',
-    // Hair/top
-    top: '50% 15%',
-    hair: '50% 15%',
-    head: '50% 40%',
-    // Accessories
+    nose: '50% 44%',
+    mouth: '50% 52%',
+    lips: '50% 52%',
+    top: '50% 18%',
+    hair: '50% 18%',
+    head: '50% 38%',
     glasses: '50% 33%',
-    earrings: '50% 35%',
-    facialHair: '50% 55%',
-    beard: '50% 55%',
-    // Clothing/body
-    clothing: '50% 70%',
-    shirt: '50% 70%',
-    body: '50% 50%',
+    earrings: '50% 36%',
+    facialHair: '50% 58%',
+    beard: '50% 58%',
+    clothing: '50% 72%',
+    shirt: '50% 72%',
+    body: '50% 48%',
     face: '50% 40%',
-    // General
     accessories: '50% 30%',
-    features: '50% 40%',
+    features: '50% 38%',
+    skinColor: '50% 42%',
+    hairColor: '50% 28%',
+    clothesColor: '50% 72%',
   }
 
   let focus = $derived(FOCUS[component] ?? '50% 40%')
 
-  /** Rendering size (generated SVG size). Larger = better crop quality. */
-  const renderSize = 200
+  /** Internal render size (larger = better zoom quality). */
+  const renderSize = 280
 
   function renderSvg(): string {
     try {
@@ -89,13 +88,15 @@
   }
 </script>
 
-<div
-  class="overflow-hidden"
-  style="width:{size}px;height:{size}px"
->
+<!--
+  Zoom trick: img is rendered at 2x container size,
+  object-fit:cover crops it, object-position controls the focus area.
+  This effectively zooms into the facial region.
+-->
+<div class="overflow-hidden" style="width:{size}px;height:{size}px">
   <img
     src={svgDataUri}
     alt={option}
-    style="width:100%;height:100%;object-fit:cover;object-position:{focus}"
+    style="width:{size * 2}px;height:{size * 2}px;object-fit:cover;object-position:{focus};max-width:none"
   />
 </div>
