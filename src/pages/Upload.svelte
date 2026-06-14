@@ -37,9 +37,9 @@
             </a>
           {:else}
             <div
-              class="bg-base-300/30 flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-lg lg:w-full"
+              class="bg-text/10 flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-lg lg:w-full"
             >
-              <span class="text-sm text-base-content/30">广告位</span>
+              <span class="text-sm text-text/30">广告位</span>
             </div>
           {/if}
         {/each}
@@ -83,9 +83,9 @@
             </a>
           {:else}
             <div
-              class="bg-base-300/30 flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-lg lg:w-full"
+              class="bg-text/10 flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-lg lg:w-full"
             >
-              <span class="text-sm text-base-content/30">广告位</span>
+              <span class="text-sm text-text/30">广告位</span>
             </div>
           {/if}
         {/each}

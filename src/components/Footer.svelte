@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="sticky bottom-0 z-10 rounded-t-2xl bg-base px-8 h-14 flex items-center justify-center text-sm text-base-content"
+  class="sticky bottom-0 z-10 flex h-14 items-center justify-center rounded-t-2xl bg-surface px-8 text-sm text-text"
 >
   &copy; {year}
 </div>

@@ -5,7 +5,6 @@
   import { readContact } from '../utils/contact-reader'
 
   interface Props {
-    /** Called when parsing succeeds with the parsed contacts. */
     onParsed: (contacts: Contact[]) => void
   }
 
@@ -16,26 +15,15 @@
   let parsing = $state(false)
   let parseError = $state('')
 
-  /**
-   * Toggles visual feedback when a file is dragged over the upload zone.
-   * @param e - The drag event from the upload zone.
-   */
   function handleDragOver(e: DragEvent) {
     e.preventDefault()
     dragOver = true
   }
 
-  /**
-   * Removes the drag visual feedback when the dragged file leaves the zone.
-   */
   function handleDragLeave() {
     dragOver = false
   }
 
-  /**
-   * Processes a file dropped onto the upload zone.
-   * @param e - The drop event containing the file data.
-   */
   function handleFileDrop(e: DragEvent) {
     e.preventDefault()
     dragOver = false
@@ -46,10 +34,6 @@
     }
   }
 
-  /**
-   * Processes a file selected via the file picker dialog.
-   * @param e - The change event from the file input element.
-   */
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement
     const file = input.files?.[0]
@@ -59,31 +43,22 @@
     }
   }
 
-  /** Clears the uploaded file and resets the upload area. */
   function handleRemoveFile() {
     uploadedFile = null
     parseError = ''
   }
 
-  /**
-   * Parses the uploaded file locally and navigates to the editor on success.
-   * @returns A promise that resolves when parsing completes.
-   */
   async function handleParse() {
-    if (!uploadedFile) {
-      return
-    }
+    if (!uploadedFile) return
     parsing = true
     parseError = ''
 
     try {
       const contacts = await readContact(uploadedFile)
-
       if (contacts.length === 0) {
         parseError = '文件中未解析到任何联系人'
         return
       }
-
       onParsed(contacts)
     } catch (e) {
       parseError = e instanceof Error ? e.message : '解析文件失败'
@@ -94,17 +69,14 @@
 </script>
 
 <div class="flex flex-1 flex-col items-center justify-center gap-6">
-  <!-- File upload area -->
   {#if uploadedFile}
     <!-- Uploaded state -->
     <div
-      class="border-success bg-success/10 flex w-full flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed px-8 h-56"
+      class="flex h-56 w-full flex-col items-center justify-center gap-3 rounded-[18px] border-2 border-dashed border-primary bg-primary/10 px-8"
     >
-      <Icon icon="line-md:clipboard-check-twotone" class="h-10 w-10 text-success" />
-      <span class="text-success font-bold">
-        {uploadedFile.name}
-      </span>
-      <span class="text-sm font-bold text-base-content/70">
+      <Icon icon="line-md:clipboard-check-twotone" class="h-10 w-10 text-primary" />
+      <span class="font-bold text-primary">{uploadedFile.name}</span>
+      <span class="text-sm font-bold text-text/70">
         {uploadedFile.size.toLocaleString()} 字节
       </span>
     </div>
@@ -112,7 +84,7 @@
     <!-- Upload prompt -->
     <label
       for="vcf-upload"
-      class="border-base-300 bg-base-100 flex w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed px-8 h-56 {dragOver
+      class="flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[18px] border-2 border-dashed border-border bg-surface px-8 {dragOver
         ? 'border-primary bg-primary/10'
         : ''}"
       ondragover={handleDragOver}
@@ -120,12 +92,12 @@
       ondrop={handleFileDrop}
     >
       <Icon icon="line-md:file-upload-twotone" class="h-10 w-10" />
-      <span> 点击或拖拽上传 .vcf / .xlsx 文件 </span>
+      <span>点击或拖拽上传 .vcf / .xlsx 文件</span>
       <span>
         <a
           href="/template/vcard-template.xlsx"
           download
-          class="text-sm font-bold link link-primary"
+          class="text-sm font-bold text-primary underline hover:text-primary-dark"
         >
           下载 xlsx 模板
         </a>
@@ -140,16 +112,11 @@
     onchange={handleFileSelect}
   />
 
-  <!-- Action buttons -->
   {#if parseError}
-    <p class="text-error text-sm font-bold">{parseError}</p>
+    <p class="text-sm font-bold text-error">{parseError}</p>
   {/if}
   <div class="flex gap-4">
-    <button
-      class="btn btn-secondary"
-      onclick={handleRemoveFile}
-      disabled={!uploadedFile || parsing}
-    >
+    <button class="btn btn-surface" onclick={handleRemoveFile} disabled={!uploadedFile || parsing}>
       重新上传
     </button>
     <button class="btn btn-primary" onclick={handleParse} disabled={!uploadedFile || parsing}>
