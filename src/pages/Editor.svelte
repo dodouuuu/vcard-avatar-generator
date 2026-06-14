@@ -155,43 +155,7 @@
     showPanel = false
   }
 
-  /**
-   * Get a thumbnail icon for a style.
-   * @param key
-   */
-  function styleIcon(key: string): string {
-    const icons: Record<string, string> = {
-      avataaars: '🎭',
-      avataaarsNeutral: '🎭',
-      adventurer: '🧝',
-      adventurerNeutral: '🧝',
-      bigEars: '🐘',
-      bigEarsNeutral: '🐘',
-      bigSmile: '😊',
-      bottts: '🤖',
-      botttsNeutral: '🤖',
-      croodles: '🎨',
-      croodlesNeutral: '🎨',
-      funEmoji: '😄',
-      icons: '🔣',
-      identicon: '🔷',
-      initials: '🔤',
-      lorelei: '👧',
-      loreleiNeutral: '👧',
-      micah: '🧑',
-      miniavs: '👶',
-      notionists: '🧑‍💻',
-      notionistsNeutral: '🧑‍💻',
-      openPeeps: '👤',
-      personas: '👥',
-      pixelArt: '🎨',
-      pixelArtNeutral: '🎨',
-      rings: '💍',
-      shapes: '🔶',
-      thumbs: '👍',
-    }
-    return icons[key] ?? '🎨'
-  }
+
 </script>
 
 <div class="flex flex-1 flex-col px-6 pb-6">
@@ -227,13 +191,7 @@
           title={key}
         >
           <div class="w-10 h-10 rounded-full overflow-hidden bg-base-100 border border-base-300">
-            {#if key === currentStyle}
-              <DiceBearAvatar style={key} params={{}} size={40} seed={key} />
-            {:else}
-              <div class="w-full h-full flex items-center justify-center text-lg">
-                {styleIcon(key)}
-              </div>
-            {/if}
+            <DiceBearAvatar style={key} params={{}} size={40} seed={key} />
           </div>
           <span class="text-[10px] text-base-content/60 truncate w-full text-center">{key}</span>
         </button>

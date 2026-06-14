@@ -4,16 +4,15 @@
    *
    * daisyUI `<dialog class="modal">` for configuring DiceBear avatar parameters.
    * All style-specific options are read from @dicebear/collection schemas at runtime.
+   * Options are displayed as visual previews (mini avatars or color swatches).
    */
   import * as collection from '@dicebear/collection'
   import Icon from '@iconify/svelte'
 
   import {
     COMMON_OPTIONS,
-    type CommonOption,
     DEFAULT_COMMON,
     filterParams,
-    isColorParam,
     paramLabel,
   } from '../config/dicebear'
   import DiceBearAvatar from './DiceBearAvatar.svelte'
@@ -85,28 +84,15 @@
     }
   })
 
-  /**
-   *
-   */
   function handleCancel() {
     onClose()
   }
 
-  /**
-   *
-   */
   function handleApply() {
     onApply({ ...editCommon }, { ...editMale }, { ...editFemale })
     onClose()
   }
 
-  /**
-   *
-   * @param map
-   * @param key
-   * @param value
-   * @param setter
-   */
   function toggleMulti(
     map: Record<string, string[]>,
     key: string,
@@ -119,52 +105,38 @@
     setter({ ...map, [key]: next })
   }
 
-  /**
-   *
-   * @param key
-   * @param value
-   */
   function toggleMale(key: string, value: string) {
     toggleMulti(editMale, key, value, (v) => (editMale = v))
   }
 
-  /**
-   *
-   * @param key
-   * @param value
-   */
   function toggleFemale(key: string, value: string) {
     toggleMulti(editFemale, key, value, (v) => (editFemale = v))
   }
 
-  /**
-   *
-   * @param key
-   * @param value
-   */
   function setCommon(key: string, value: string) {
     editCommon = { ...editCommon, [key]: value }
   }
 
-  /**
-   *
-   */
   function resetDefaults() {
     editCommon = { ...DEFAULT_COMMON }
     editMale = {}
     editFemale = {}
   }
 
-  /**
-   *
-   */
   function onNativeClose() {
     if (showPanel) {
       onClose()
     }
   }
 
-  /** Preview avatar size. */
+  /** Check if an enum value is a hex color code. */
+  function isHexColor(val: string): boolean {
+    return /^#[0-9a-f]{3,8}$/i.test(val)
+  }
+
+  /** Preview avatar size for option thumbnails. */
+  const thumbSize = 36
+  /** Preview avatar size for bottom previews. */
   const size = 48
 </script>
 
@@ -246,84 +218,158 @@
       </div>
     </div>
 
-    <!-- Gender params -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
-      <!-- Male -->
-      <div class="rounded-lg border border-blue-200 bg-blue-50/40 p-4">
-        <h4 class="text-sm font-bold text-blue-700 mb-3 flex items-center gap-1.5">
-          <Icon icon="line-md:male" class="h-4 w-4" />
-          男士参数
-          <span class="text-xs text-blue-400 font-normal ml-auto">{maleParams.length} 项</span>
-        </h4>
-        {#each maleParams as [key, prop] (key)}
-          {@const values = editMale[key] ?? []}
-          {@const enumVals = prop.items?.enum ?? []}
-          <div class="mb-2.5">
-            <div class="text-xs text-blue-600/70 mb-1 font-medium flex items-center gap-1">
-              {paramLabel(key)}
-              <span class="text-blue-300 text-[10px] font-normal">({enumVals.length} 选)</span>
-            </div>
-            <div class="flex flex-wrap gap-1">
-              {#each enumVals.slice(0, 12) as opt (opt)}
-                {@const selected = values.includes(opt)}
-                <button
-                  class="px-2 py-1 rounded-md text-xs border cursor-pointer transition-colors
-                    {selected
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white/50 text-blue-800 border-blue-200 hover:bg-blue-100'}"
-                  onclick={() => toggleMale(key, opt)}
-                >
-                  {opt || '(default)'}
-                </button>
-              {/each}
-              {#if enumVals.length > 12}
-                <span class="px-2 py-1 text-xs text-blue-400">+{enumVals.length - 12}</span>
-              {/if}
-            </div>
+    <!-- Gender params — only shown when a gender has parameters -->
+    {#if maleParams.length > 0 || femaleParams.length > 0}
+      <div
+        class="grid grid-cols-1 {maleParams.length > 0 && femaleParams.length > 0
+          ? 'md:grid-cols-2'
+          : ''} gap-4 p-6"
+      >
+        <!-- Male -->
+        {#if maleParams.length > 0}
+          <div class="rounded-lg border border-blue-200 bg-blue-50/40 p-4">
+            <h4 class="text-sm font-bold text-blue-700 mb-3 flex items-center gap-1.5">
+              <Icon icon="line-md:male" class="h-4 w-4" />
+              男士参数
+              <span class="text-xs text-blue-400 font-normal ml-auto">{maleParams.length} 项</span>
+            </h4>
+            {#each maleParams as [key, prop] (key)}
+              {@const values = editMale[key] ?? []}
+              {@const enumVals = prop.items?.enum ?? []}
+              {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+              <div class="mb-3">
+                <div class="text-xs text-blue-600/70 mb-1.5 font-medium flex items-center gap-1">
+                  {paramLabel(key)}
+                  <span class="text-blue-300 text-[10px] font-normal">({enumVals.length} 选)</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
+                    {@const selected = values.includes(opt)}
+                    {#if isColorStyle}
+                      <button
+                        type="button"
+                        class="w-7 h-7 rounded-full cursor-pointer border-2 transition-all
+                          {selected
+                          ? 'border-blue-600 ring-2 ring-blue-300 scale-110'
+                          : 'border-blue-200 hover:border-blue-400'}"
+                        style="background:{opt}"
+                        onclick={() => toggleMale(key, opt)}
+                        title={opt}
+                      ></button>
+                    {:else}
+                      <button
+                        class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all
+                          {selected
+                          ? 'bg-blue-100 ring-1 ring-blue-400'
+                          : 'hover:bg-blue-50'}"
+                        onclick={() => toggleMale(key, opt)}
+                        title={opt}
+                      >
+                        <div
+                          class="w-9 h-9 rounded overflow-hidden {selected
+                            ? 'ring-2 ring-blue-600'
+                            : 'ring-1 ring-blue-200'}"
+                        >
+                          <DiceBearAvatar
+                            style={currentStyle}
+                            params={{ ...editMale, [key]: [opt] }}
+                            seed={`preview-${key}-${opt}`}
+                            size={thumbSize}
+                          />
+                        </div>
+                        <span
+                          class="text-[9px] text-blue-700 truncate max-w-12 leading-tight"
+                          >{opt}</span
+                        >
+                      </button>
+                    {/if}
+                  {/each}
+                  {#if !isColorStyle && enumVals.length > 8}
+                    <span
+                      class="w-9 h-9 flex items-center justify-center text-xs text-blue-400 font-medium"
+                    >
+                      +{enumVals.length - 8}
+                    </span>
+                  {/if}
+                </div>
+              </div>
+            {/each}
           </div>
-        {:else}
-          <p class="text-xs text-blue-400">此风格无额外发型/衣服参数</p>
-        {/each}
-      </div>
+        {/if}
 
-      <!-- Female -->
-      <div class="rounded-lg border border-pink-200 bg-pink-50/40 p-4">
-        <h4 class="text-sm font-bold text-pink-700 mb-3 flex items-center gap-1.5">
-          <Icon icon="line-md:female" class="h-4 w-4" />
-          女士参数
-          <span class="text-xs text-pink-400 font-normal ml-auto">{femaleParams.length} 项</span>
-        </h4>
-        {#each femaleParams as [key, prop] (key)}
-          {@const values = editFemale[key] ?? []}
-          {@const enumVals = prop.items?.enum ?? []}
-          <div class="mb-2.5">
-            <div class="text-xs text-pink-600/70 mb-1 font-medium flex items-center gap-1">
-              {paramLabel(key)}
-              <span class="text-pink-300 text-[10px] font-normal">({enumVals.length} 选)</span>
-            </div>
-            <div class="flex flex-wrap gap-1">
-              {#each enumVals.slice(0, 12) as opt (opt)}
-                {@const selected = values.includes(opt)}
-                <button
-                  class="px-2 py-1 rounded-md text-xs border cursor-pointer transition-colors
-                    {selected
-                    ? 'bg-pink-600 text-white border-pink-600'
-                    : 'bg-white/50 text-pink-800 border-pink-200 hover:bg-pink-100'}"
-                  onclick={() => toggleFemale(key, opt)}
-                >
-                  {opt || '(default)'}
-                </button>
-              {/each}
-              {#if enumVals.length > 12}
-                <span class="px-2 py-1 text-xs text-pink-400">+{enumVals.length - 12}</span>
-              {/if}
-            </div>
+        <!-- Female -->
+        {#if femaleParams.length > 0}
+          <div class="rounded-lg border border-pink-200 bg-pink-50/40 p-4">
+            <h4 class="text-sm font-bold text-pink-700 mb-3 flex items-center gap-1.5">
+              <Icon icon="line-md:female" class="h-4 w-4" />
+              女士参数
+              <span class="text-xs text-pink-400 font-normal ml-auto">{femaleParams.length} 项</span>
+            </h4>
+            {#each femaleParams as [key, prop] (key)}
+              {@const values = editFemale[key] ?? []}
+              {@const enumVals = prop.items?.enum ?? []}
+              {@const isColorStyle = enumVals.length > 0 && isHexColor(enumVals[0]!)}
+              <div class="mb-3">
+                <div class="text-xs text-pink-600/70 mb-1.5 font-medium flex items-center gap-1">
+                  {paramLabel(key)}
+                  <span class="text-pink-300 text-[10px] font-normal">({enumVals.length} 选)</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {#each isColorStyle ? enumVals : enumVals.slice(0, 8) as opt (opt)}
+                    {@const selected = values.includes(opt)}
+                    {#if isColorStyle}
+                      <button
+                        type="button"
+                        class="w-7 h-7 rounded-full cursor-pointer border-2 transition-all
+                          {selected
+                          ? 'border-pink-600 ring-2 ring-pink-300 scale-110'
+                          : 'border-pink-200 hover:border-pink-400'}"
+                        style="background:{opt}"
+                        onclick={() => toggleFemale(key, opt)}
+                        title={opt}
+                      ></button>
+                    {:else}
+                      <button
+                        class="flex flex-col items-center gap-0.5 cursor-pointer p-0.5 rounded-lg transition-all
+                          {selected
+                          ? 'bg-pink-100 ring-1 ring-pink-400'
+                          : 'hover:bg-pink-50'}"
+                        onclick={() => toggleFemale(key, opt)}
+                        title={opt}
+                      >
+                        <div
+                          class="w-9 h-9 rounded overflow-hidden {selected
+                            ? 'ring-2 ring-pink-600'
+                            : 'ring-1 ring-pink-200'}"
+                        >
+                          <DiceBearAvatar
+                            style={currentStyle}
+                            params={{ ...editFemale, [key]: [opt] }}
+                            seed={`preview-${key}-${opt}`}
+                            size={thumbSize}
+                          />
+                        </div>
+                        <span
+                          class="text-[9px] text-pink-700 truncate max-w-12 leading-tight"
+                          >{opt}</span
+                        >
+                      </button>
+                    {/if}
+                  {/each}
+                  {#if !isColorStyle && enumVals.length > 8}
+                    <span
+                      class="w-9 h-9 flex items-center justify-center text-xs text-pink-400 font-medium"
+                    >
+                      +{enumVals.length - 8}
+                    </span>
+                  {/if}
+                </div>
+              </div>
+            {/each}
           </div>
-        {:else}
-          <p class="text-xs text-pink-400">此风格无额外发型/衣服参数</p>
-        {/each}
+        {/if}
       </div>
-    </div>
+    {/if}
 
     <!-- Preview -->
     <div class="mx-6 mb-4 flex justify-center gap-8 p-3 bg-base-200 rounded-lg">
