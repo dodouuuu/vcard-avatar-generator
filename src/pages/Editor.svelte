@@ -5,7 +5,7 @@
 
   import DiceBearAvatar from '../components/DiceBearAvatar.svelte'
   import DiceBearPanel from '../components/DiceBearPanel.svelte'
-  import { DEFAULT_COMMON } from '../config/dicebear'
+  import { DEFAULT_COMMON, buildGenderConfig } from '../config/dicebear'
   import { type Contact, Gender } from '../types'
 
   interface Props {
@@ -35,6 +35,20 @@
   let maleConfig = $state<Record<string, string[]>>({})
   let femaleConfig = $state<Record<string, string[]>>({})
   let showPanel = $state(false)
+
+  // Initialize gender defaults when style changes
+  $effect(() => {
+    const style = currentStyle
+    const entry = (
+      collection as Record<string, { schema?: { properties?: Record<string, unknown> } }>
+    )[style]
+    const props = (entry?.schema?.properties ?? {}) as Record<
+      string,
+      { type?: string; items?: { enum?: string[] }; default?: unknown }
+    >
+    maleConfig = buildGenderConfig(props, 'male')
+    femaleConfig = buildGenderConfig(props, 'female')
+  })
 
   // -- Toast --
   let toastMsg = $state('')
