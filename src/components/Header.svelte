@@ -2,7 +2,7 @@
   import Icon from '@iconify/svelte'
 </script>
 
-<div class="sticky top-0 z-10 rounded-b-2xl bg-base-300 px-8 h-14 flex items-center">
+<div class="sticky top-0 z-10 rounded-b-2xl bg-base px-8 h-14 flex items-center">
   <div class="relative flex w-full items-center justify-center">
     <h1 class="text-2xl font-bold tracking-tight text-base-content">通讯录头像生成器</h1>
     <a
