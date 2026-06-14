@@ -39,7 +39,8 @@ npm run dev
 ### 构建
 
 ```bash
-npm run build
+npm run build          # 生产构建（base: /）
+npm run build:demo     # Demo 构建（base: /vcard-avatar-generator/，需配置 .env.demo）
 ```
 
 ## 使用指南
@@ -58,12 +59,15 @@ src/
 ├── App.svelte                  # 根组件，包含页面路由
 ├── app.css                     # 全局样式
 ├── types.ts                    # Contact / Tel / Gender 类型定义
+├── config/
+│   └── ads.ts                  # 广告位配置（图片、链接）
 ├── components/
 │   ├── Header.svelte           # 顶栏（标题 + GitHub 链接）
-│   └── Footer.svelte           # 底栏（版权信息）
+│   ├── Footer.svelte           # 底栏（版权信息）
+│   └── FileUploader.svelte     # 文件上传组件（拖拽/选择/解析）
 ├── pages/
-│   ├── Upload.svelte           # 文件上传页（拖拽上传、文件选择）
-│   └── Editor.svelte           # 联系人编辑页（表格展示、头像预览）
+│   ├── Upload.svelte           # 文件上传页（三栏布局 + 广告位）
+│   └── Editor.svelte           # 联系人编辑页（表格排序、固定列）
 └── utils/
     ├── contact-reader.ts       # 统一文件读取入口（.vcf / .xlsx）
     ├── contact-writer.ts       # vCard 3.0 序列化（含 base64 头像）
@@ -71,7 +75,7 @@ src/
     ├── chinese-gender-data.ts      # 约 9,442 个汉字的频率数据
     └── reader/
         ├── reader-vcard.ts     # 基于 ical.js 的 vCard 解析器
-        └── reader-xlsx.ts      # XLSX 解析器（待实现）
+        └── reader-xlsx.ts      # XLSX 解析器
 ```
 
 ## 配置说明
@@ -83,16 +87,17 @@ src/
 
 ## 开发命令
 
-| 命令                 | 说明                  |
-| -------------------- | --------------------- |
-| `npm run dev`        | 启动开发服务器        |
-| `npm run build`      | 构建生产版本          |
-| `npm run preview`    | 预览生产构建          |
-| `npm run lint`       | ESLint 检查           |
-| `npm run lint:fix`   | ESLint 检查并自动修复 |
-| `npm run format`     | Prettier 格式检查     |
-| `npm run format:fix` | Prettier 格式化并写入 |
-| `npm run check`      | Svelte/TS 类型检查    |
+| 命令                 | 说明                     |
+| -------------------- | ------------------------ |
+| `npm run dev`        | 启动开发服务器           |
+| `npm run build`      | 生产构建                 |
+| `npm run build:demo` | Demo 构建（自定义 base） |
+| `npm run preview`    | 预览生产构建             |
+| `npm run lint`       | ESLint 检查              |
+| `npm run lint:fix`   | ESLint 检查并自动修复    |
+| `npm run format`     | Prettier 格式检查        |
+| `npm run format:fix` | Prettier 格式化并写入    |
+| `npm run check`      | Svelte/TS 类型检查       |
 
 ## 开源协议
 

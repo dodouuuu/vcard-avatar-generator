@@ -39,7 +39,8 @@ npm run dev
 ### Build
 
 ```bash
-npm run build
+npm run build          # Production build (base: /)
+npm run build:demo     # Demo build (base: /vcard-avatar-generator/, requires .env.demo)
 ```
 
 ## Usage
@@ -58,12 +59,15 @@ src/
 ├── App.svelte                  # Root component with page routing
 ├── app.css                     # Global styles
 ├── types.ts                    # Contact / Tel / Gender type definitions
+├── config/
+│   └── ads.ts                  # Ad slot configuration (images, links)
 ├── components/
 │   ├── Header.svelte           # Top bar with title & GitHub link
-│   └── Footer.svelte           # Bottom bar with copyright
+│   ├── Footer.svelte           # Bottom bar with copyright
+│   └── FileUploader.svelte     # File upload component (drag/select/parse)
 ├── pages/
-│   ├── Upload.svelte           # File upload page (drag & drop, file picker)
-│   └── Editor.svelte           # Contact editor with table & avatar previews
+│   ├── Upload.svelte           # Upload page (three-column layout + ad slots)
+│   └── Editor.svelte           # Contact editor (sortable table, sticky column)
 └── utils/
     ├── contact-reader.ts       # Unified file reader (.vcf / .xlsx)
     ├── contact-writer.ts       # vCard 3.0 serialiser with base64 photo
@@ -71,7 +75,7 @@ src/
     ├── chinese-gender-data.ts      # Frequency data for ~9,442 characters
     └── reader/
         ├── reader-vcard.ts     # ical.js-based vCard parser
-        └── reader-xlsx.ts      # XLSX parser (TODO)
+        └── reader-xlsx.ts      # XLSX parser
 ```
 
 ## Configuration
@@ -87,6 +91,7 @@ src/
 | -------------------- | ------------------------ |
 | `npm run dev`        | Start dev server         |
 | `npm run build`      | Build for production     |
+| `npm run build:demo` | Demo build (custom base) |
 | `npm run preview`    | Preview production build |
 | `npm run lint`       | ESLint check             |
 | `npm run lint:fix`   | ESLint check & auto-fix  |
