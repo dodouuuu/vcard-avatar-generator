@@ -13,7 +13,7 @@
     /** Style key matching an export name in @dicebear/collection. */
     style: string
     /** Parameter dictionary passed to createAvatar options. */
-    params: Record<string, string | string[]>
+    params: Record<string, string | string[] | boolean | number>
     /** Random seed; change to get a different avatar. */
     seed?: string
     /** Avatar size in pixels. */
@@ -23,7 +23,7 @@
   let { style, params, seed = 'default', size = 120 }: Props = $props()
 
   /**
-   *
+   * @returns SVG data URI string.
    */
   function renderSvg(): string {
     try {
@@ -62,10 +62,4 @@
   }
 </script>
 
-<img
-  src={svgDataUri}
-  alt="头像"
-  class="object-cover w-full h-full"
-  width={size}
-  height={size}
-/>
+<img src={svgDataUri} alt="头像" class="object-cover w-full h-full" width={size} height={size} />

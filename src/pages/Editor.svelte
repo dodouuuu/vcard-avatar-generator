@@ -3,9 +3,9 @@
   import Icon from '@iconify/svelte'
   import { SvelteMap } from 'svelte/reactivity'
 
-  import DiceBearAvatar from '../components/DiceBearAvatar.svelte'
-  import DiceBearPanel from '../components/DiceBearPanel.svelte'
-  import { DEFAULT_COMMON, buildGenderConfig } from '../config/dicebear'
+  import AvatarCfg from '../components/AvatarCfg.svelte'
+  import AvatarImg from '../components/AvatarImg.svelte'
+  import { buildGenderConfig, DEFAULT_COMMON } from '../config/dicebear'
   import { type Contact, Gender } from '../types'
 
   interface Props {
@@ -69,14 +69,32 @@
   }
 
   /**
-   * Get params for a contact based on gender.
-   * @param gender
-   */
-  function configForGender(gender: Gender): Record<string, string | string[]> {
-    if (gender === Gender.F) {
-      return femaleConfig
+   * Build params for a contact by merging common config with gender config.
+   *
+   * Common config string values are coerced to proper types:
+   * - flip, clip: string → boolean
+   * - rotate, scale, radius: string → number
+   * - backgroundColor, backgroundType: string → string[] (core expects arrays)
+   *
+   * @param gender - The contact's gender.
+   * @returns Merged params object for createAvatar.
+  function configForGender(gender: Gender): Record<string, string | string[] | boolean | number> {
+    const genderCfg = gender === Gender.F ? femaleConfig : maleConfig
+
+    // Coerce commonConfig to proper types for @dicebear/core Options
+    const common: Record<string, unknown> = { ...commonConfig }
+    for (const key of Object.keys(common)) {
+      const val = common[key]
+      if (key === 'flip' || key === 'clip') {
+        common[key] = val === 'true'
+      } else if (key === 'rotate' || key === 'scale' || key === 'radius') {
+        common[key] = Number(val)
+      } else if (key === 'backgroundColor' || key === 'backgroundType') {
+        common[key] = [val]
+      }
     }
-    return maleConfig
+
+    return { ...common, ...genderCfg } as Record<string, string | string[] | boolean | number>
   }
 
   // -- table sorting --
@@ -98,8 +116,9 @@
   })
 
   /**
+   * Toggle sort order for a column, or switch to a new sort column.
    *
-   * @param key
+   * @param key - The column key to sort by.
    */
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -111,8 +130,10 @@
   }
 
   /**
+   * Get the icon name for the current sort state of a column.
    *
-   * @param key
+   * @param key - The column key.
+   * @returns Iconify icon name.
    */
   function sortIcon(key: SortKey) {
     if (sortKey !== key) {
@@ -125,17 +146,20 @@
   let regenerationSeeds = new SvelteMap<number, string>()
 
   /**
+   * Get the regeneration seed for a contact by index.
    *
-   * @param contactIdx
+   * @param contactIdx - The contact index in the list.
+   * @returns Seed string for DiceBear avatar generation.
    */
   function getSeed(contactIdx: number): string {
     return regenerationSeeds.get(contactIdx) ?? contacts[contactIdx]?.fn ?? 'default'
   }
 
   /**
+   * Regenerate a single contact's avatar with a new random seed.
    *
-   * @param contactIdx
-   * @param contact
+   * @param contactIdx - The contact index.
+   * @param contact - The contact object.
    */
   function handleAvatarClick(contactIdx: number, contact: Contact) {
     const newSeed = `r${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
@@ -146,10 +170,11 @@
   }
 
   /**
+   * Apply config changes from the panel to local state.
    *
-   * @param common
-   * @param male
-   * @param female
+   * @param common - Common options (backgroundColor, radius, etc.).
+   * @param male - Male-specific style params.
+   * @param female - Female-specific style params.
    */
   function handleApplyConfig(
     common: Record<string, string>,
@@ -174,14 +199,10 @@
     showToast(`已重新生成全部 ${contacts.length} 个头像`)
   }
 
-  /**
-   *
-   */
+  /** Close the DiceBear config panel. */
   function handleClosePanel() {
     showPanel = false
   }
-
-
 </script>
 
 <div class="flex flex-1 flex-col px-6 pb-6">
@@ -217,7 +238,7 @@
           title={key}
         >
           <div class="w-10 h-10 overflow-hidden bg-base-100 border border-base-300">
-            <DiceBearAvatar style={key} params={{}} size={40} seed={key} />
+            <AvatarImg style={key} params={{}} size={40} seed={key} />
           </div>
           <span class="text-[10px] text-base-content/60 truncate w-full text-center">{key}</span>
         </button>
@@ -325,7 +346,7 @@
                 onclick={() => handleAvatarClick(contactIdx, contact)}
               >
                 <div class="w-10">
-                  <DiceBearAvatar
+                  <AvatarImg
                     style={currentStyle}
                     params={configForGender(contact.gender)}
                     seed={getSeed(contactIdx)}
@@ -341,8 +362,8 @@
   </div>
 </div>
 
-<!-- DiceBear Config Panel -->
-<DiceBearPanel
+<!-- Avatar Config Panel -->
+<AvatarCfg
   {currentStyle}
   {commonConfig}
   {maleConfig}
