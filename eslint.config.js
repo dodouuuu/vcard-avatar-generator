@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import prettier from 'eslint-config-prettier'
+import jsdoc from 'eslint-plugin-jsdoc'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import svelte from 'eslint-plugin-svelte'
 import ts from 'typescript-eslint'
@@ -14,10 +15,23 @@ export default [
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
+      jsdoc,
     },
     rules: {
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      curly: 'error',
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          require: {
+            FunctionDeclaration: true,
+            ArrowFunctionExpression: true,
+          },
+        },
+      ],
+      'jsdoc/require-param': 'error',
+      'jsdoc/require-returns': 'error',
     },
   },
   // TypeScript already handles undefined variable checking,
