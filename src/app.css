@@ -134,9 +134,6 @@ body {
 .table-cartoon tbody tr:nth-child(even) {
   background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
 }
-.table-cartoon tbody tr:hover {
-  background: none;
-}
 .table-cartoon td.sticky,
 .table-cartoon th.sticky {
   position: sticky;
@@ -146,12 +143,6 @@ body {
   box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.1);
 }
 .table-cartoon tbody tr:nth-child(even) td.sticky {
-  background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
-}
-.table-cartoon tbody tr:hover td.sticky {
-  background: var(--color-surface);
-}
-.table-cartoon tbody tr:nth-child(even):hover td.sticky {
   background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
 }
 
