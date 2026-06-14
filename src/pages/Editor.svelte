@@ -149,6 +149,18 @@
   }
 
   /**
+   * Regenerate all contact avatars with new random seeds.
+   */
+  function handleRegenerateAll() {
+    const updated = new SvelteMap<number, string>()
+    for (let i = 0; i < contacts.length; i++) {
+      updated.set(i, `r${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
+    }
+    regenerationSeeds = updated
+    showToast(`已重新生成全部 ${contacts.length} 个头像`)
+  }
+
+  /**
    *
    */
   function handleClosePanel() {
@@ -197,11 +209,19 @@
         </button>
       {/each}
     </div>
-    <div class="flex items-center justify-between mt-1">
-      <span class="text-[10px] text-base-content/40">{styleKeys.length} 种风格可用</span>
+    <div class="mt-1 flex items-center gap-2 border-t border-base-300 pt-1.5">
+      <button class="btn btn-xs btn-ghost gap-1" onclick={handleBack}>
+        <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
+        重新上传
+      </button>
+      <button class="btn btn-xs btn-ghost gap-1" onclick={handleRegenerateAll}>
+        <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
+        重新生成
+      </button>
+      <span class="flex-1"></span>
       <button class="btn btn-xs btn-ghost gap-1" onclick={() => (showPanel = true)}>
         <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
-        参数配置
+        风格配置
       </button>
     </div>
   </div>

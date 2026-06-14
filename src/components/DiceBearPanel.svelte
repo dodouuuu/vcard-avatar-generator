@@ -84,15 +84,28 @@
     }
   })
 
+  /**
+   *
+   */
   function handleCancel() {
     onClose()
   }
 
+  /**
+   *
+   */
   function handleApply() {
     onApply({ ...editCommon }, { ...editMale }, { ...editFemale })
     onClose()
   }
 
+  /**
+   *
+   * @param map
+   * @param key
+   * @param value
+   * @param setter
+   */
   function toggleMulti(
     map: Record<string, string[]>,
     key: string,
@@ -105,31 +118,55 @@
     setter({ ...map, [key]: next })
   }
 
+  /**
+   *
+   * @param key
+   * @param value
+   */
   function toggleMale(key: string, value: string) {
     toggleMulti(editMale, key, value, (v) => (editMale = v))
   }
 
+  /**
+   *
+   * @param key
+   * @param value
+   */
   function toggleFemale(key: string, value: string) {
     toggleMulti(editFemale, key, value, (v) => (editFemale = v))
   }
 
+  /**
+   *
+   * @param key
+   * @param value
+   */
   function setCommon(key: string, value: string) {
     editCommon = { ...editCommon, [key]: value }
   }
 
+  /**
+   *
+   */
   function resetDefaults() {
     editCommon = { ...DEFAULT_COMMON }
     editMale = {}
     editFemale = {}
   }
 
+  /**
+   *
+   */
   function onNativeClose() {
     if (showPanel) {
       onClose()
     }
   }
 
-  /** Check if an enum value is a hex color code. */
+  /**
+   * Check if an enum value is a hex color code.
+   * @param val
+   */
   function isHexColor(val: string): boolean {
     return /^#[0-9a-f]{3,8}$/i.test(val)
   }
