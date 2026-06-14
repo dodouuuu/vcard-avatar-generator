@@ -138,47 +138,21 @@ export function filterParams(
 /**
  * Build sensible gender-based defaults from a style's schema properties.
  *
- * Strategy:
- * - For enum params: use schema's `default` array if available, else pick first enum value
- * - For color params: use schema's `default` array
- * - For probability params:
- *   - Male: set facialHair/beard probabilities to 100 (always on), use schema defaults for rest
- *   - Female: set facialHair/beard probabilities to 0 (always off), other probabilities to schema defaults
+ * Strategy: DON'T pre-set style params — leave them empty so DiceBear
+ * uses seed-based randomization (changing the seed = different avatar).
  *
- * @returns A Record<string, string[]> where keys are param names and values are selected values.
+ * The only exceptions are probability overrides:
+ * - Male: facialHair/beard probability=100 (always show)
+ * - Female: facialHair/beard probability=0 (never show)
+ *
+ * @returns A Record<string, string[]> suitable for DiceBear params.
  */
 export function getGenderDefaults(
-  props: Record<string, SchemaProp>,
-  gender: 'male' | 'female',
+  _props: Record<string, SchemaProp>,
+  _gender: 'male' | 'female',
 ): Record<string, string[]> {
-  const result: Record<string, string[]> = {}
-
-  for (const [key, prop] of Object.entries(props)) {
-    // Skip noise/internal params
-    if (isNoiseParam(key)) continue
-
-    // Skip params irrelevant for this gender
-    if (!isRelevantForGender(key, gender)) continue
-
-    const enumVals = prop.items?.enum ?? []
-
-    // Get default values from schema
-    let defaultVals: string[] = []
-    if (Array.isArray(prop.default)) {
-      defaultVals = prop.default.filter(
-        (v): v is string => typeof v === 'string',
-      )
-    }
-
-    if (defaultVals.length > 0) {
-      result[key] = [...defaultVals]
-    } else if (enumVals.length > 0) {
-      // No schema default, use first enum value
-      result[key] = [enumVals[0]!]
-    }
-  }
-
-  return result
+  // Deliberately empty — let DiceBear randomize based on seed
+  return {}
 }
 
 /**
@@ -214,19 +188,40 @@ export function getGenderProbabilities(
 }
 
 /**
- * Build complete default config for a gender,
- * including both value params and probability overrides.
+ * Build complete default config for a gender.
+ *
+ * Returns ONLY the minimum params needed for gender differentiation:
+ * - Male: enable facial hair (probability=100), pick first facial hair variant
+ * - Female: disable facial hair (probability=0)
+ *
+ * All other params are left empty so DiceBear uses seed-based randomization,
+ * making the "regenerate" button actually change the avatar appearance.
  */
 export function buildGenderConfig(
   props: Record<string, SchemaProp>,
   gender: 'male' | 'female',
 ): Record<string, string[]> {
-  const config = getGenderDefaults(props, gender)
-  const probs = getGenderProbabilities(props, gender)
+  const config: Record<string, string[]> = {}
 
-  // Add probability overrides as string[] values
-  for (const [key, val] of Object.entries(probs)) {
-    config[key] = [String(val)]
+  for (const [key, prop] of Object.entries(props)) {
+    if (!isProbabilityParam(key)) continue
+    const baseKey = probabilityBaseKey(key)
+
+    // Only override probabilities for gender-specific features
+    if (!MALE_ONLY_KEYS.has(baseKey) && !FEMALE_ONLY_KEYS.has(baseKey)) continue
+
+    if (gender === 'male' && MALE_ONLY_KEYS.has(baseKey)) {
+      config[key] = ['100'] // always show facial hair for male
+
+      // Also pick the first facial hair variant so there's something to show
+      const baseProp = props[baseKey]
+      const enumVals = baseProp?.items?.enum ?? []
+      if (enumVals.length > 0) {
+        config[baseKey] = [enumVals[0]!]
+      }
+    } else if (gender === 'female' && MALE_ONLY_KEYS.has(baseKey)) {
+      config[key] = ['0'] // never show facial hair for female
+    }
   }
 
   return config
