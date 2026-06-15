@@ -1,22 +1,19 @@
 @import 'tailwindcss';
-@plugin 'daisyui';
 
-/*
- * daisyUI 主题 — 卡通风格色板 (Ant Design 卡通风格)
- *
- * 色板:  背景 #FAFAEE | 文字 #51463B | 主色 #225555 | 强调 #9CD3D3
- * 边框:  2px 粗线, #225555
- * 圆角:  18px 统一
- * 阴影:  无
- */
+@plugin 'daisyui' {
+  themes: cartoon --default;
+}
+
 @plugin 'daisyui/theme' {
-  name: 'antdesign';
+  name: 'cartoon';
   default: true;
+  prefersdark: false;
+  color-scheme: light;
 
   /* ---- 语义色 ---- */
   --color-primary: #225555;
   --color-primary-content: #ffffff;
-  --color-secondary: #f0ecd8;
+  --color-secondary: #bbaa99;
   --color-secondary-content: #51463b;
   --color-accent: #9cd3d3;
   --color-accent-content: #51463b;
@@ -29,9 +26,9 @@
   --color-success: #52c41a;
   --color-success-content: #ffffff;
   --color-warning: #faad14;
-  --color-warning-content: #ffffff;
+  --color-warning-content: #51463b;
   --color-error: #da8787;
-  --color-error-content: #ffffff;
+  --color-error-content: #51463b;
 
   /* ---- 底色 ---- */
   --color-base-100: #fafaee;
@@ -46,12 +43,10 @@
 
   /* ---- 边框 (2px 粗线) ---- */
   --border: 2px;
-}
 
-/* ========== 全局基础样式 ========== */
-body {
-  background-color: var(--color-base-100);
-  color: var(--color-base-content);
+  /* ---- 阴影 (无) ---- */
+  --depth: 0;
+  --noise: 0;
 }
 
 /* 滚动条 — 无白色背景 */
