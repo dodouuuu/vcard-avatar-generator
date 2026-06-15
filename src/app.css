@@ -31,11 +31,11 @@ html {
 body {
   background-color: var(--color-surface);
   color: var(--color-text);
-  overscroll-behavior: none;
 }
 
-/* 移动端内部滚动容器优化 */
+/* 移动端内部滚动容器优化：contain 防止滚动链到父容器造成粘滞 */
 main {
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
