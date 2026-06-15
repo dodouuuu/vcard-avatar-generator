@@ -383,10 +383,10 @@
   }
 </script>
 
-<dialog class="modal-cartoon" bind:this={dialogEl} onclose={onNativeClose}>
+<dialog class="modal" class:modal-open={showPanel} bind:this={dialogEl} onclose={onNativeClose}>
   <div class="p-0">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b-2 border-border px-6 py-4">
+    <div class="flex items-center justify-between border-b border-base-300 px-6 py-4">
       <h3 class="flex items-center gap-2 text-lg font-bold">
         <AvatarImg styleName={currentStyle} options={{}} size={32} seed="panel-header" />
         <span class="ml-1">{currentStyle}</span>
@@ -397,15 +397,17 @@
     <!-- Body -->
     <div class="max-h-[70vh] space-y-5 overflow-y-auto p-5">
       {#if loading}
-        <div class="flex items-center justify-center py-8 text-text/50">加载风格配置中...</div>
+        <div class="flex items-center justify-center py-8 text-base-content/50">
+          加载风格配置中...
+        </div>
       {:else if loadedStyle}
         <!-- Core Options -->
-        <div class="rounded-2xl border border-border bg-surface/50 p-4">
-          <h4 class="mb-3 text-xs font-bold uppercase tracking-wider text-text/40">外观</h4>
+        <div class="rounded-box border border-base-300 bg-base-100/50 p-4">
+          <h4 class="mb-3 text-xs font-bold uppercase tracking-wider text-base-content/40">外观</h4>
           <div class="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
             <!-- Background color -->
             <div>
-              <div class="mb-1.5 text-xs font-medium text-text/60">底色</div>
+              <div class="mb-1.5 text-xs font-medium text-base-content/60">底色</div>
               <div class="flex flex-wrap gap-1">
                 {#each bgPresets as p (p.value)}
                   {@const current = getBaseStr('backgroundColor')}
@@ -415,9 +417,9 @@
                     class="h-7 w-7 cursor-pointer rounded-full border-2 transition-all
                       {current === p.value
                       ? 'scale-110 border-primary'
-                      : 'border-border/40 hover:border-border'}"
+                      : 'border-base-300/40 hover:border-base-300'}"
                     style={isTransparent
-                      ? 'background-image: repeating-conic-gradient(var(--color-border) 0% 25%, transparent 0% 50%); background-size: 8px 8px'
+                      ? 'background-image: repeating-conic-gradient(var(--color-base-300) 0% 25%, transparent 0% 50%); background-size: 8px 8px'
                       : `background:${p.value}`}
                     onclick={() =>
                       setBase(
@@ -432,7 +434,7 @@
 
             <!-- Border radius -->
             <div>
-              <div class="mb-1.5 text-xs font-medium text-text/60">形状</div>
+              <div class="mb-1.5 text-xs font-medium text-base-content/60">形状</div>
               <div class="flex flex-wrap gap-1">
                 {#each borderRadiusPresets as p (p.value)}
                   {@const current = getBaseNum('borderRadius')}
@@ -446,7 +448,7 @@
 
             <!-- Scale -->
             <div>
-              <div class="mb-1.5 text-xs font-medium text-text/60">缩放</div>
+              <div class="mb-1.5 text-xs font-medium text-base-content/60">缩放</div>
               <div class="flex flex-wrap gap-1">
                 {#each scalePresets as p (p.value)}
                   {@const current =
@@ -461,7 +463,7 @@
 
             <!-- Flip -->
             <div>
-              <div class="mb-1.5 text-xs font-medium text-text/60">翻转</div>
+              <div class="mb-1.5 text-xs font-medium text-base-content/60">翻转</div>
               <div class="flex flex-wrap gap-1">
                 {#each flipOptions as o (o.value)}
                   {@const current = getBaseStr('flip') || 'none'}
@@ -479,19 +481,19 @@
         {#snippet genderContent(editRecord: StoredOptions, genderKey: 'male' | 'female')}
           <!-- Component accordion -->
           {#if componentFields.length > 0}
-            <div class="mb-3 rounded-[18px] border-2 border-border overflow-hidden">
+            <div class="mb-3 rounded-box border border-base-300 overflow-hidden">
               {#each componentFields as comp (comp.key)}
                 {@const panelId = `${genderKey}-cmp-${comp.key}`}
                 {@const open = isPanelOpen(panelId)}
-                <div class="border-b border-border last:border-b-0">
+                <div class="border-b border-base-300 last:border-b-0">
                   <!-- Header -->
                   <button
-                    class="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-surface/60"
+                    class="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-base-100/60"
                     onclick={() => togglePanel(panelId)}
                   >
                     <!-- Chevron -->
                     <span
-                      class="flex h-4 w-4 shrink-0 items-center justify-center text-text/30 transition-transform {open
+                      class="flex h-4 w-4 shrink-0 items-center justify-center text-base-content/30 transition-transform {open
                         ? 'rotate-90'
                         : ''}"
                     >
@@ -501,7 +503,7 @@
                     <span class="flex-1 text-sm font-semibold">{comp.label}</span>
                     <!-- Badge -->
                     <span
-                      class="rounded-full bg-text/8 px-1.5 py-0.5 text-[11px] font-medium text-text/50"
+                      class="rounded-full bg-base-content/10 px-1.5 py-0.5 text-[11px] font-medium text-base-content/50"
                     >
                       {componentSelectedCount(editRecord, comp.key, comp.values.length)}/{comp
                         .values.length}
@@ -528,18 +530,18 @@
 
           <!-- Color accordion -->
           {#if colorFields.length > 0}
-            <div class="rounded-[18px] border-2 border-border overflow-hidden">
+            <div class="rounded-box border border-base-300 overflow-hidden">
               {#each colorFields as color (color.key)}
                 {@const panelId = `${genderKey}-clr-${color.key}`}
                 {@const open = isPanelOpen(panelId)}
-                <div class="border-b border-border last:border-b-0">
+                <div class="border-b border-base-300 last:border-b-0">
                   <!-- Header -->
                   <button
-                    class="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-surface/60"
+                    class="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-base-100/60"
                     onclick={() => togglePanel(panelId)}
                   >
                     <span
-                      class="flex h-4 w-4 shrink-0 items-center justify-center text-text/30 transition-transform {open
+                      class="flex h-4 w-4 shrink-0 items-center justify-center text-base-content/30 transition-transform {open
                         ? 'rotate-90'
                         : ''}"
                     >
@@ -547,7 +549,7 @@
                     </span>
                     <span class="flex-1 text-sm font-semibold">{color.label}</span>
                     <span
-                      class="rounded-full bg-text/8 px-1.5 py-0.5 text-[11px] font-medium text-text/50"
+                      class="rounded-full bg-base-content/10 px-1.5 py-0.5 text-[11px] font-medium text-base-content/50"
                     >
                       {colorSelectedCount(editRecord, color.key, color.values.length)}/{color.values
                         .length}
@@ -573,14 +575,14 @@
         {/snippet}
 
         <!-- Gender Tabs box -->
-        <div class="rounded-[18px] border-2 border-border overflow-hidden">
+        <div class="rounded-box border border-base-300 overflow-hidden">
           <!-- Tab buttons -->
-          <div class="flex border-b-2 border-border bg-surface/50">
+          <div class="flex border-b border-base-300 bg-base-100/50">
             <button
               class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors
                 {activeTab === 'male'
                 ? 'text-primary border-b-2 border-primary -mb-0.5'
-                : 'text-text/40 hover:text-text/60'}"
+                : 'text-base-content/40 hover:text-base-content/60'}"
               style="margin-bottom:-2px"
               onclick={() => (activeTab = 'male')}
             >
@@ -591,7 +593,7 @@
               class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors
                 {activeTab === 'female'
                 ? 'text-primary border-b-2 border-primary -mb-0.5'
-                : 'text-text/40 hover:text-text/60'}"
+                : 'text-base-content/40 hover:text-base-content/60'}"
               style="margin-bottom:-2px"
               onclick={() => (activeTab = 'female')}
             >
@@ -615,7 +617,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="flex justify-between border-t-2 border-border bg-surface px-6 py-4">
+    <div class="flex justify-between border-t border-base-300 bg-base-100 px-6 py-4">
       <button class="btn btn-ghost btn-sm gap-1" onclick={resetDefaults}>
         <Icon icon="line-md:refresh-twotone" class="h-3.5 w-3.5" />
         恢复默认

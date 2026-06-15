@@ -132,7 +132,7 @@
         <button
           type="button"
           class="h-9 w-9 cursor-pointer rounded-full border-2 transition-all
-            {isSelected ? 'scale-110 border-primary' : 'border-border/40 hover:border-border'}"
+            {isSelected ? 'scale-110 border-primary' : 'border-base-300/40 hover:border-base-300'}"
           style="background:{color}"
           onclick={() => onToggle(fieldKey, opt)}
           title={color}

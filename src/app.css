@@ -2,87 +2,56 @@
 @plugin 'daisyui';
 
 /*
- * daisyUI 主题 — 基于 Ant Design 设计规范
+ * daisyUI 主题 — 卡通风格色板 (Ant Design 卡通风格)
  *
- * 色板:  主色 #1677FF (Daybreak Blue)
- * 文本:  rgba(0,0,0,0.88)
- * 边框:  1px
- * 圆角:  6px / 8px
- * 间距:  8px 基准
- *
- * 参考: https://ant.design/index-cn
+ * 色板:  背景 #FAFAEE | 文字 #51463B | 主色 #225555 | 强调 #9CD3D3
+ * 边框:  2px 粗线, #225555
+ * 圆角:  18px 统一
+ * 阴影:  无
  */
 @plugin 'daisyui/theme' {
   name: 'antdesign';
   default: true;
 
   /* ---- 语义色 ---- */
-  --color-primary: #1677ff;
+  --color-primary: #225555;
   --color-primary-content: #ffffff;
-  --color-secondary: #f5f5f5;
-  --color-secondary-content: #434343;
-  --color-accent: #1677ff;
-  --color-accent-content: #ffffff;
-  --color-neutral: #262626;
+  --color-secondary: #f0ecd8;
+  --color-secondary-content: #51463b;
+  --color-accent: #9cd3d3;
+  --color-accent-content: #51463b;
+  --color-neutral: #225555;
   --color-neutral-content: #ffffff;
 
   /* ---- 功能色 ---- */
-  --color-info: #1677ff;
-  --color-info-content: #ffffff;
+  --color-info: #9cd3d3;
+  --color-info-content: #51463b;
   --color-success: #52c41a;
   --color-success-content: #ffffff;
   --color-warning: #faad14;
   --color-warning-content: #ffffff;
-  --color-error: #ff4d4f;
+  --color-error: #da8787;
   --color-error-content: #ffffff;
 
   /* ---- 底色 ---- */
-  --color-base-100: #ffffff;
-  --color-base-200: #fafafa;
-  --color-base-300: #f5f5f5;
-  --color-base-content: rgba(0, 0, 0, 0.88);
+  --color-base-100: #fafaee;
+  --color-base-200: #f0ecd8;
+  --color-base-300: #cbc4af;
+  --color-base-content: #51463b;
 
-  /* ---- 圆角 (Ant Design: 6px/8px) ---- */
-  --radius-selector: 0.375rem; /* 6px — 勾选框 / 标签 */
-  --radius-field: 0.5rem; /* 8px — 输入框 / 选择器 */
-  --radius-box: 0.5rem; /* 8px — 卡片 / 弹窗 */
-
-  /* ---- 边框 ---- */
-  --border: 1px;
-
-  /* ---- 间距 (Ant Design 8px 基准, Tailwind 已内置 4px 网格) ---- */
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-}
-
-/*
- * 卡通主题 — 源自 Ant Design 卡通风格
- *
- * 色板:  背景 #FAFAEE | 文字 #51463B | 主色 #225555 | 强调 #9CD3D3
- * 边框:  2px 粗线, #225555
- * 圆角:  18px 统一 (按钮、输入框、卡片全都 18px)
- * 阴影:  无
- * 间距:  统一 24px (p-6)
- */
-@theme {
-  --color-surface: #fafaee;
-  --color-surface-soft: #f0ecd8;
-  --color-surface-card: #bbaa99;
-  --color-primary: #225555;
-  --color-primary-light: #9cd3d3;
-  --color-primary-dark: #1a4444;
-  --color-error: #da8787;
-  --color-text: #51463b;
-  --color-border: #225555;
-  --color-selected: #cbc4af;
-  --color-info: #9cd3d3;
+  /* ---- 圆角 (统一 18px) ---- */
+  --radius-selector: 18px;
+  --radius-field: 18px;
   --radius-box: 18px;
+
+  /* ---- 边框 (2px 粗线) ---- */
+  --border: 2px;
 }
 
 /* ========== 全局基础样式 ========== */
 body {
-  background-color: var(--color-surface);
-  color: var(--color-text);
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
 }
 
 /* 滚动条 — 无白色背景 */
@@ -94,182 +63,10 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-primary);
   border-radius: 3px;
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
-}
-
-/* ========== 组件级实用类 ========== */
-
-/* --- 按钮 --- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 18px;
-  padding: 0.375rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn-ghost {
-  border-color: transparent;
-  background: transparent;
-  color: var(--color-text);
-}
-.btn-ghost:hover {
-  background: color-mix(in srgb, var(--color-primary-light) 20%, transparent);
-}
-.btn-primary {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: white;
-}
-.btn-primary:hover {
-  background: var(--color-primary-dark);
-}
-.btn-surface {
-  border-color: var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-.btn-surface:hover {
-  background: color-mix(in srgb, var(--color-primary-light) 20%, transparent);
-}
-
-.btn-xs {
-  padding: 0.125rem 0.625rem;
-  font-size: 0.75rem;
-}
-.btn-sm {
-  padding: 0.25rem 1rem;
-  font-size: 0.8125rem;
-}
-.btn-square {
-  width: 2.5rem;
-  padding: 0;
-}
-
-/* --- 卡片容器 --- */
-.card-cartoon {
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--color-surface);
-  box-shadow: none;
-}
-
-/* --- 表格 --- */
-.table-cartoon {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  overflow-x: auto;
-  background: var(--color-surface);
-}
-.table-cartoon thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.table-cartoon th {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: left;
-  background: var(--color-surface);
-  border-bottom: 2px solid var(--color-border);
-}
-.table-cartoon td {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
-}
-.table-cartoon tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
-}
-.table-cartoon td.sticky,
-.table-cartoon th.sticky {
-  position: sticky;
-  right: 0;
-  z-index: 1;
-  background: var(--color-surface);
-  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.1);
-}
-.table-cartoon tbody tr:nth-child(even) td.sticky {
-  background: color-mix(in srgb, var(--color-border) 5%, var(--color-surface));
-}
-
-/* --- 表单控件 --- */
-.input-cartoon {
-  width: 100%;
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  padding: 0.25rem 0.625rem;
-  font-size: 0.75rem;
-  background: white;
-  color: var(--color-text);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.input-cartoon:focus {
-  border-color: var(--color-border);
-}
-
-.select-cartoon {
-  width: 100%;
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  padding: 0.25rem 1.75rem 0.25rem 0.625rem;
-  font-size: 0.75rem;
-  background: white
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2351463B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")
-    no-repeat right 6px center;
-  background-size: 14px;
-  color: var(--color-text);
-  outline: none;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-.select-cartoon:focus {
-  border-color: var(--color-border);
-}
-
-/* --- 弹窗 (Modal) --- */
-.modal-cartoon {
-  margin: auto;
-  max-width: 64rem;
-  width: 91.666667%;
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--color-surface);
-  padding: 0;
-  box-shadow: none;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
-}
-.modal-cartoon::backdrop {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* --- Sticky 工具类 --- */
-.sticky-top {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--color-surface);
+  scrollbar-color: var(--color-primary) transparent;
 }

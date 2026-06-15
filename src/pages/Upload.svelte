@@ -33,13 +33,13 @@
               rel="noopener noreferrer"
               class="w-[calc(50%-0.5rem)] lg:w-full"
             >
-              <img src={ad.img} alt={ad.alt} class="w-full rounded-[18px]" />
+              <img src={ad.img} alt={ad.alt} class="w-full rounded-box" />
             </a>
           {:else}
             <div
-              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-[18px] border-2 border-border bg-text/10 lg:w-full"
+              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-box border border-base-300 bg-base-content/10 lg:w-full"
             >
-              <span class="text-sm text-text/30">广告位</span>
+              <span class="text-sm text-base-content/30">广告位</span>
             </div>
           {/if}
         {/each}
@@ -49,7 +49,7 @@
     <!-- Center: main content -->
     <div class="flex flex-[2] flex-col gap-6">
       <!-- Privacy notice -->
-      <div class="flex flex-col gap-3 rounded-[18px] border-2 border-border bg-surface p-6">
+      <div class="flex flex-col gap-3 rounded-box border border-base-300 bg-base-100 p-6">
         <div class="flex items-start gap-3">
           <Icon icon="line-md:alert-circle-twotone" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <span class="text-sm">所有数据仅在本地处理，不会上传到任何服务器。</span>
@@ -79,13 +79,13 @@
               rel="noopener noreferrer"
               class="w-[calc(50%-0.5rem)] lg:w-full"
             >
-              <img src={ad.img} alt={ad.alt} class="w-full rounded-[18px]" />
+              <img src={ad.img} alt={ad.alt} class="w-full rounded-box" />
             </a>
           {:else}
             <div
-              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-[18px] border-2 border-border bg-text/10 lg:w-full"
+              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-box border border-base-300 bg-base-content/10 lg:w-full"
             >
-              <span class="text-sm text-text/30">广告位</span>
+              <span class="text-sm text-base-content/30">广告位</span>
             </div>
           {/if}
         {/each}

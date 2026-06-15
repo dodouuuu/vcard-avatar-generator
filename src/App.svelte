@@ -19,7 +19,7 @@
   }
 </script>
 
-<div class="flex min-h-screen flex-col bg-surface font-sans">
+<div class="flex min-h-screen flex-col bg-base-100 font-sans">
   <Header />
   <main class="flex flex-1 flex-col pt-14 pb-14">
     <div class="mx-auto flex w-full max-w-5xl flex-1 flex-col">

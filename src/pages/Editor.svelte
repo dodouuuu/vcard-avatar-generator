@@ -166,11 +166,11 @@
 
 <div class="flex flex-1 flex-col p-6">
   <!-- Header + Style Bar: sticky -->
-  <div class="sticky-top mb-6 rounded-[18px] border-2 border-border bg-surface">
+  <div class="sticky top-0 z-20 mb-6 rounded-box border border-base-300 bg-base-100">
     <!-- Title row: back + title + count, flush left -->
     <div class="flex items-center gap-1 pt-4 pb-3 pl-0 pr-4">
       <button
-        class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-text/60 hover:text-text"
+        class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-base-content/60 hover:text-base-content"
         onclick={handleBack}
         aria-label="返回上传"
       >
@@ -178,7 +178,7 @@
       </button>
       <h2 class="text-lg font-bold">联系人编辑</h2>
       {#if pageData?.contacts}
-        <span class="text-sm text-text/50">共 {pageData.contacts.length} 个联系人</span>
+        <span class="text-sm text-base-content/50">共 {pageData.contacts.length} 个联系人</span>
       {/if}
     </div>
 
@@ -187,10 +187,10 @@
       <div class="flex gap-2 overflow-x-auto pb-1">
         {#each styleKeys as key (key)}
           <button
-            class="flex shrink-0 flex-col items-center border-2 transition-all cursor-pointer
+            class="flex shrink-0 flex-col items-center border transition-all cursor-pointer
               {key === currentStyle
               ? 'border-primary bg-primary/10'
-              : 'border-transparent hover:border-text/20'}"
+              : 'border-transparent hover:border-base-content/20'}"
             onclick={() => (currentStyle = key)}
             title={key}
           >
@@ -203,7 +203,7 @@
     </div>
 
     <!-- Divider -->
-    <div class="mx-4 border-t-2 border-border"></div>
+    <div class="mx-4 border-t border-base-300"></div>
 
     <!-- Button row: left group + right "风格配置" -->
     <div class="flex items-center justify-between px-4 pb-4 pt-3">
@@ -226,8 +226,8 @@
   </div>
 
   <!-- Table -->
-  <div class="table-cartoon">
-    <table class="w-full">
+  <div class="overflow-x-auto rounded-box border border-base-300">
+    <table class="table">
       <thead>
         <tr>
           <th class="min-w-20 cursor-pointer select-none" onclick={() => toggleSort('familyName')}>
@@ -256,7 +256,7 @@
             >
           </th>
           <th class="min-w-36">手机号</th>
-          <th class="sticky right-0 z-[1] bg-surface shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.15)]"
+          <th class="sticky right-0 z-[1] bg-base-100 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.15)]"
             >头像</th
           >
         </tr>
@@ -265,27 +265,27 @@
         {#each sortedContacts as contact, contactIdx (contactIdx)}
           <tr>
             <td class="min-w-20">
-              <input class="input-cartoon" bind:value={contact.familyName} placeholder="姓" />
+              <input class="input" bind:value={contact.familyName} placeholder="姓" />
             </td>
             <td class="min-w-20">
-              <input class="input-cartoon" bind:value={contact.givenName} placeholder="名" />
+              <input class="input" bind:value={contact.givenName} placeholder="名" />
             </td>
             <td class="min-w-28">
-              <input class="input-cartoon" bind:value={contact.fn} placeholder="姓名" />
+              <input class="input" bind:value={contact.fn} placeholder="姓名" />
             </td>
             <td class="min-w-20">
-              <select class="select-cartoon" bind:value={contact.gender}>
+              <select class="select" bind:value={contact.gender}>
                 <option value={Gender.M}>男</option>
                 <option value={Gender.F}>女</option>
                 <option value={Gender.U}>未知</option>
               </select>
             </td>
             <td class="min-w-28">
-              <input class="input-cartoon" bind:value={contact.org} placeholder="单位" />
+              <input class="input" bind:value={contact.org} placeholder="单位" />
             </td>
             <td class="min-w-36">
               {#if contact.tel.length === 0}
-                <span class="text-text/40">—</span>
+                <span class="text-base-content/40">—</span>
               {:else}
                 <div class="flex flex-wrap gap-x-2">
                   {#each contact.tel as phone (phone.number)}

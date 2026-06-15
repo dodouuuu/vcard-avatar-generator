@@ -89,11 +89,11 @@
   {#if uploadedFile}
     <!-- Uploaded state -->
     <div
-      class="flex h-56 w-full flex-col items-center justify-center gap-3 rounded-[18px] border-2 border-dashed border-primary bg-primary/10 px-8"
+      class="flex h-56 w-full flex-col items-center justify-center gap-3 rounded-box border-2 border-dashed border-primary bg-primary/10 px-8"
     >
       <Icon icon="line-md:clipboard-check-twotone" class="h-10 w-10 text-primary" />
       <span class="font-bold text-primary">{uploadedFile.name}</span>
-      <span class="text-sm font-bold text-text/70">
+      <span class="text-sm font-bold text-base-content/70">
         {uploadedFile.size.toLocaleString()} 字节
       </span>
     </div>
@@ -101,7 +101,7 @@
     <!-- Upload prompt -->
     <label
       for="vcf-upload"
-      class="flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[18px] border-2 border-dashed border-border bg-surface px-8 {dragOver
+      class="flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-box border-2 border-dashed border-base-300 bg-base-100 px-8 {dragOver
         ? 'border-primary bg-primary/10'
         : ''}"
       ondragover={handleDragOver}
@@ -133,7 +133,7 @@
     <p class="text-sm font-bold text-error">{parseError}</p>
   {/if}
   <div class="flex gap-4">
-    <button class="btn btn-surface" onclick={handleRemoveFile} disabled={!uploadedFile || parsing}>
+    <button class="btn btn-outline" onclick={handleRemoveFile} disabled={!uploadedFile || parsing}>
       重新上传
     </button>
     <button class="btn btn-primary" onclick={handleParse} disabled={!uploadedFile || parsing}>
