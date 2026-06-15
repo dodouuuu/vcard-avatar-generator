@@ -211,33 +211,6 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* --- Toast 通知 --- */
-.toast {
-  position: fixed;
-  z-index: 50;
-  pointer-events: none;
-}
-.toast-top {
-  top: 1rem;
-}
-.toast-end {
-  right: 1rem;
-}
-
-.alert {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  border-radius: 18px;
-  border: 2px solid var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary-light) 30%, var(--color-surface));
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  font-weight: 500;
-  pointer-events: auto;
-}
-
 /* --- Sticky 工具类 --- */
 .sticky-top {
   position: sticky;

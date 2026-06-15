@@ -34,3 +34,6 @@ export interface Contact {
   /** vCard PHOTO — avatar image encoded as a base64 data URI. */
   photo: string
 }
+
+/** Flat options record that maps directly to DiceBear v10 {@link StyleOptions}. */
+export type StoredOptions = Record<string, unknown>

@@ -2,11 +2,11 @@
   import Icon from '@iconify/svelte'
   import { SvelteMap } from 'svelte/reactivity'
 
-  import AvatarCfg from '../components/AvatarCfg.svelte'
-  import AvatarImg from '../components/AvatarImg.svelte'
-  import { DEFAULT_COMMON } from '../config/dicebear'
-  import { STYLE_NAMES } from '../config/styles'
-  import { type Contact, Gender } from '../types'
+  import AvatarImg from '../components/avatar/AvatarImg.svelte'
+  import AvatarPanel from '../components/avatar/AvatarPanel.svelte'
+  import { STYLE_NAMES } from '../components/avatar/styles'
+  import { DEFAULT_BASE } from '../config/dicebear'
+  import { type Contact, Gender, type StoredOptions } from '../types'
   import { generateVcf } from '../utils/contact-writer'
 
   interface Props {
@@ -16,7 +16,7 @@
 
   let { data: pageData, onNavigate }: Props = $props()
 
-  let contacts = $state<Contact[]>(pageData?.contacts ?? [])
+  let contacts = $derived(pageData?.contacts ?? [])
 
   /**
    *
@@ -30,30 +30,20 @@
 
   // -- DiceBear state --
   let currentStyle = $state(styleKeys[0] ?? 'avataaars')
-  let commonConfig = $state<Record<string, string>>({ ...DEFAULT_COMMON })
-  let maleConfig = $state<Record<string, string[]>>({})
-  let femaleConfig = $state<Record<string, string[]>>({})
+  let baseOptions = $state<StoredOptions>({ ...DEFAULT_BASE })
+  let maleOverrides = $state<StoredOptions>({})
+  let femaleOverrides = $state<StoredOptions>({})
   let showPanel = $state(false)
 
   /**
-   * Build DiceBear params for a given gender
+   * Merge base options with gender-specific overrides for rendering.
+   *
    * @param gender
-   * @returns merged config object for avatar rendering
+   * @returns Merged StoredOptions for the given gender.
    */
-  function configForGender(gender: Gender): Record<string, string | string[] | boolean | number> {
-    const genderCfg = gender === Gender.F ? femaleConfig : maleConfig
-    const common: Record<string, unknown> = { ...commonConfig }
-    for (const key of Object.keys(common)) {
-      const val = common[key]
-      if (key === 'flip' || key === 'clip') {
-        common[key] = val === 'true'
-      } else if (key === 'rotate' || key === 'scale' || key === 'radius') {
-        common[key] = Number(val)
-      } else if (key === 'backgroundColor' || key === 'backgroundType') {
-        common[key] = [val]
-      }
-    }
-    return { ...common, ...genderCfg } as Record<string, string | string[] | boolean | number>
+  function configForGender(gender: Gender): StoredOptions {
+    const overrides = gender === Gender.F ? femaleOverrides : maleOverrides
+    return { ...baseOptions, ...overrides }
   }
 
   // -- table sorting --
@@ -130,18 +120,15 @@
   /**
    * Apply config changes from the panel
    * @param common
+   * @param base
    * @param male
    * @param female
    * @returns void
    */
-  function handleApplyConfig(
-    common: Record<string, string>,
-    male: Record<string, string[]>,
-    female: Record<string, string[]>,
-  ) {
-    commonConfig = common
-    maleConfig = male
-    femaleConfig = female
+  function handleApplyConfig(base: StoredOptions, male: StoredOptions, female: StoredOptions) {
+    baseOptions = base
+    maleOverrides = male
+    femaleOverrides = female
   }
 
   /**
@@ -208,7 +195,7 @@
             title={key}
           >
             <div class="h-10 w-10 overflow-hidden rounded-none">
-              <AvatarImg style={key} params={{}} size={40} seed={key} />
+              <AvatarImg styleName={key} options={{}} size={40} seed={key} />
             </div>
           </button>
         {/each}
@@ -316,8 +303,8 @@
               >
                 <div class="w-10">
                   <AvatarImg
-                    style={currentStyle}
-                    params={configForGender(contact.gender)}
+                    styleName={currentStyle}
+                    options={configForGender(contact.gender)}
                     seed={getSeed(contactIdx)}
                     size={80}
                   />
@@ -332,11 +319,11 @@
 </div>
 
 <!-- Avatar Config Panel -->
-<AvatarCfg
+<AvatarPanel
   {currentStyle}
-  {commonConfig}
-  {maleConfig}
-  {femaleConfig}
+  {baseOptions}
+  {maleOverrides}
+  {femaleOverrides}
   bind:showPanel
   onApply={handleApplyConfig}
   onClose={handleClosePanel}

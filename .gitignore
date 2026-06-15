@@ -32,3 +32,22 @@ dist-ssr
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Temporary Files
+*.tmp
+*.temp
+tmp/
+temp/
+~*
+*~
+
+# Cache Files
+*.cache
+.cache/
+cache/
+**/cache/
+.npm/
+.yarn/
+
+# DiceBear Styles
+src/components/avatar/styles/index.ts

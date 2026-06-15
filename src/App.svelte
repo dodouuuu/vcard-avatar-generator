@@ -1,18 +1,12 @@
 <script lang="ts">
-  import { addCollection } from '@iconify/svelte'
-  // 注册 line-md 图标到本地存储，不走远程请求
-  import lineMdIcons from '@iconify-json/line-md/icons.json'
-  addCollection(lineMdIcons)
   import Footer from './components/Footer.svelte'
   import Header from './components/Header.svelte'
   import Editor from './pages/Editor.svelte'
   import Upload from './pages/Upload.svelte'
-
-  // 注册 line-md 图标到本地存储，不请求 iconify.design
-  addCollection(lineMdIcons)
+  import type { Contact } from './types'
 
   let page = $state<'upload' | 'editor'>('upload')
-  let sharedData = $state<unknown>(null)
+  let sharedData = $state<{ contacts: Contact[] } | null>(null)
 
   /**
    *
@@ -20,7 +14,7 @@
    * @param data
    */
   function navigateTo(target: string, data?: unknown) {
-    sharedData = data ?? null
+    sharedData = (data as { contacts: Contact[] } | null) ?? null
     page = target as 'upload' | 'editor'
   }
 </script>
