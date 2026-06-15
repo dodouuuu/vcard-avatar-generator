@@ -15,15 +15,24 @@
   let parsing = $state(false)
   let parseError = $state('')
 
+  /**
+   * Handles drag-over event on the upload area.
+   * @param e - The drag event.
+   */
   function handleDragOver(e: DragEvent) {
     e.preventDefault()
     dragOver = true
   }
 
+  /** Resets drag state when cursor leaves the upload area. */
   function handleDragLeave() {
     dragOver = false
   }
 
+  /**
+   * Processes the dropped file and stores it for parsing.
+   * @param e - The drag event containing the dropped file.
+   */
   function handleFileDrop(e: DragEvent) {
     e.preventDefault()
     dragOver = false
@@ -34,6 +43,10 @@
     }
   }
 
+  /**
+   * Captures the selected file from the file input.
+   * @param e - The file input change event.
+   */
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement
     const file = input.files?.[0]
@@ -43,13 +56,17 @@
     }
   }
 
+  /** Clears the currently uploaded file and any parse error. */
   function handleRemoveFile() {
     uploadedFile = null
     parseError = ''
   }
 
+  /** Reads the uploaded file and parses contacts from it. */
   async function handleParse() {
-    if (!uploadedFile) return
+    if (!uploadedFile) {
+      return
+    }
     parsing = true
     parseError = ''
 

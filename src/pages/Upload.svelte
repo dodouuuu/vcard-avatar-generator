@@ -11,6 +11,10 @@
 
   let { onNavigate }: Props = $props()
 
+  /**
+   * Navigates to the editor page with parsed contacts.
+   * @param contacts - The parsed contacts from the uploaded file.
+   */
   function handleParsed(contacts: Contact[]) {
     onNavigate('editor', { contacts })
   }
@@ -52,7 +56,9 @@
         </div>
         <div class="flex items-start gap-3">
           <Icon icon="line-md:alert-circle-twotone" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <span class="text-sm">我们不会存储你的个人信息，关闭页面后不会保留任何痕迹，请放心使用。</span>
+          <span class="text-sm"
+            >我们不会存储你的个人信息，关闭页面后不会保留任何痕迹，请放心使用。</span
+          >
         </div>
       </div>
 
