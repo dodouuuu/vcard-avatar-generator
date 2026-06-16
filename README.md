@@ -1,6 +1,12 @@
 # vCard Avatar Generator
 
-> English | [简体中文](README_zh-CN.md)
+<p align="center">
+  <a href="README_zh-CN.md">中文</a> · <a href="README.md">English</a>
+</p>
+
+<p align="center">
+  <a href="https://dodouuuu.github.io/vcard-avatar-generator/">Live Demo</a>
+</p>
 
 ## Introduction
 
@@ -9,6 +15,7 @@ A browser-based tool to batch-generate avatars for your vCard contacts. Upload a
 ## Features
 
 - **Import .vcf / .xlsx** — Supports vCard 2.1/3.0/4.0 files via drag-and-drop or file picker (powered by [ical.js](https://github.com/kewisch/ical.js))
+- **Avatar Styles** — Powered by [DiceBear](https://www.dicebear.com/) v10, supporting multiple avatar styles with customizable options
 - **XLSX Template** — Download a ready-to-use template for spreadsheet-based contact management
 - **Chinese Name Gender Guessing** — Automatically infer gender from given names using a Naive Bayes model trained on ~2,000,000 records (~9,442 characters)
 - **Gallery-style Contact Table** — Browse and edit contact names, genders, and phone numbers in a clean table layout with avatar previews
@@ -20,6 +27,7 @@ A browser-based tool to batch-generate avatars for your vCard contacts. Upload a
 - **Build**: Vite + Svelte 5 + TypeScript
 - **Styling**: Tailwind CSS v4 + [daisyUI](https://daisyui.com/) 5
 - **Icons**: [Iconify](https://iconify.design/) (`@iconify/svelte` + `line-md` set)
+- **Avatar Engine**: [DiceBear](https://www.dicebear.com/) v10
 - **vCard Parsing**: [ical.js](https://github.com/kewisch/ical.js)
 - **Code Quality**: ESLint + Prettier + Husky + commitlint + lint-staged
 
@@ -49,7 +57,7 @@ npm run build:demo     # Demo build (base: /vcard-avatar-generator/, requires .e
 2. **Review** — Parsed contacts are displayed in a table where you can edit names and genders
 3. **Export** — Click the download button to get an updated `.vcf` file with embedded avatars
 
-> For spreadsheet users, download the [XLSX template](/template/vcard-template.xlsx) from the upload page, fill in your contacts, then import it directly.
+> For spreadsheet users, download the [XLSX template](public/asset/vcard-template.xlsx) from the upload page, fill in your contacts, then import it directly.
 
 ## Project Structure
 
@@ -60,13 +68,18 @@ src/
 ├── app.css                     # Global styles
 ├── types.ts                    # Contact / Tel / Gender type definitions
 ├── config/
-│   └── ads.ts                  # Ad slot configuration (images, links)
+│   ├── dicebear.ts             # DiceBear default options
+│   └── spotcard.ts             # Sidebar spot card configuration
 ├── components/
 │   ├── Header.svelte           # Top bar with title & GitHub link
-│   ├── Footer.svelte           # Bottom bar with copyright
-│   └── FileUploader.svelte     # File upload component (drag/select/parse)
+│   ├── Footer.svelte           # Bottom bar with copyright & build time
+│   ├── FileUploader.svelte     # File upload component (drag/select/parse)
+│   └── avatar/
+│       ├── AvatarImg.svelte    # Avatar renderer component
+│       ├── AvatarOpt.svelte    # Avatar option component
+│       └── AvatarPanel.svelte  # Avatar config panel (style/color/components)
 ├── pages/
-│   ├── Upload.svelte           # Upload page (three-column layout + ad slots)
+│   ├── Upload.svelte           # Upload page (three-column layout)
 │   └── Editor.svelte           # Contact editor (sortable table, sticky column)
 └── utils/
     ├── contact-reader.ts       # Unified file reader (.vcf / .xlsx)

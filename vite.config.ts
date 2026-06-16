@@ -12,6 +12,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [tailwindcss(), svelte(), dicebearStylesPlugin()],
     base: env.VITE_BASE || '/',
+    define: {
+      __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
