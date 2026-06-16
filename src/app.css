@@ -83,12 +83,12 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 3px;
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 }
 
 /* 表格斑马纹 sticky 列 — 继承行背景，防止横向滚动透出内容 */

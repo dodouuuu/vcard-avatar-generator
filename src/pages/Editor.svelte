@@ -189,9 +189,7 @@
           >
             <div class="h-10 w-10 overflow-hidden rounded-none">
               <svg width="40" height="40">
-                <use
-                  href="{import.meta.env.BASE_URL}heads.svg#{key.replace(/[^a-zA-Z0-9-]/g, '-')}"
-                />
+                <use href="image/header.svg#{key.replace(/[^a-zA-Z0-9-]/g, '-')}" />
               </svg>
             </div>
           </button>

@@ -2,7 +2,7 @@
   import Icon from '@iconify/svelte'
 
   import FileUploader from '../components/FileUploader.svelte'
-  import { adConfig } from '../config/ads'
+  import { spotCardConfig } from '../config/spotcard'
   import { type Contact } from '../types'
 
   interface Props {
@@ -25,23 +25,15 @@
     <!-- Left ad slot -->
     <aside class="flex-1">
       <div class="flex flex-row flex-wrap gap-4 lg:flex-col">
-        {#each adConfig.left as ad, i (i)}
-          {#if ad}
-            <a
-              href={ad.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-[calc(50%-0.5rem)] lg:w-full"
-            >
-              <img src={ad.img} alt={ad.alt} class="w-full rounded-box" />
-            </a>
-          {:else}
-            <div
-              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-box border border-base-300 bg-base-content/10 lg:w-full"
-            >
-              <span class="text-sm text-base-content/30">广告位</span>
-            </div>
-          {/if}
+        {#each spotCardConfig.slice(0, 2) as card, i (i)}
+          <a
+            href={card.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-[calc(50%-0.5rem)] lg:w-full"
+          >
+            <img src={card.img} alt={card.alt} class="w-full rounded-box" />
+          </a>
         {/each}
       </div>
     </aside>
@@ -71,23 +63,15 @@
     <!-- Right ad slot -->
     <aside class="flex-1">
       <div class="flex flex-row flex-wrap gap-4 lg:flex-col">
-        {#each adConfig.right as ad, i (i)}
-          {#if ad}
-            <a
-              href={ad.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-[calc(50%-0.5rem)] lg:w-full"
-            >
-              <img src={ad.img} alt={ad.alt} class="w-full rounded-box" />
-            </a>
-          {:else}
-            <div
-              class="flex h-32 w-[calc(50%-0.5rem)] items-center justify-center rounded-box border border-base-300 bg-base-content/10 lg:w-full"
-            >
-              <span class="text-sm text-base-content/30">广告位</span>
-            </div>
-          {/if}
+        {#each spotCardConfig.slice(2) as card, i (i)}
+          <a
+            href={card.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-[calc(50%-0.5rem)] lg:w-full"
+          >
+            <img src={card.img} alt={card.alt} class="w-full rounded-box" />
+          </a>
         {/each}
       </div>
     </aside>

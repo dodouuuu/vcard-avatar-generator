@@ -59,6 +59,6 @@ export default [
     },
   },
   {
-    ignores: ['build/', 'dist/', 'node_modules/', '.svelte-kit/', '.vite'],
+    ignores: ['build/', 'dist/', 'node_modules/', '.svelte-kit/', '.temp', '.vite'],
   },
 ]

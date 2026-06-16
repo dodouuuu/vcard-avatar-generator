@@ -49,5 +49,8 @@ cache/
 .npm/
 .yarn/
 
+
+# DiceBear Header
+public/image/header.svg
 # DiceBear Styles
-src/components/avatar/styles/index.ts
+src/components/avatar/styles.ts
