@@ -579,25 +579,23 @@
           <!-- Tab buttons -->
           <div class="flex border-b border-base-300 bg-base-100/50">
             <button
-              class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors
+              class="flex items-center px-4 py-2.5 text-sm font-semibold transition-colors
                 {activeTab === 'male'
                 ? 'text-primary border-b-2 border-primary -mb-0.5'
                 : 'text-base-content/40 hover:text-base-content/60'}"
               style="margin-bottom:-2px"
               onclick={() => (activeTab = 'male')}
             >
-              <Icon icon="line-md:male" class="h-4 w-4" />
               男士
             </button>
             <button
-              class="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors
+              class="flex items-center px-4 py-2.5 text-sm font-semibold transition-colors
                 {activeTab === 'female'
                 ? 'text-primary border-b-2 border-primary -mb-0.5'
                 : 'text-base-content/40 hover:text-base-content/60'}"
               style="margin-bottom:-2px"
               onclick={() => (activeTab = 'female')}
             >
-              <Icon icon="line-md:female" class="h-4 w-4" />
               女士
             </button>
           </div>
@@ -619,13 +617,13 @@
     <!-- Footer -->
     <div class="flex justify-between border-t border-base-300 bg-base-100 px-6 py-4">
       <button class="btn btn-ghost btn-sm gap-1" onclick={resetDefaults}>
-        <Icon icon="line-md:refresh-twotone" class="h-3.5 w-3.5" />
+        <Icon icon="line-md:rotate-270" class="h-3.5 w-3.5" />
         恢复默认
       </button>
       <div class="flex gap-2">
         <button class="btn btn-ghost btn-sm" onclick={handleCancel}>取消</button>
         <button class="btn btn-primary btn-sm gap-1" onclick={handleApply}>
-          <Icon icon="line-md:confirm-twotone" class="h-3.5 w-3.5" />
+          <Icon icon="line-md:confirm-circle-twotone" class="h-3.5 w-3.5" />
           保存配置
         </button>
       </div>

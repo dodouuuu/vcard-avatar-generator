@@ -112,7 +112,7 @@
       <span>点击或拖拽上传 .vcf / .xlsx 文件</span>
       <span>
         <a
-          href="/asset/vcard-template.xlsx"
+          href="/vcard-template.xlsx"
           download
           class="text-sm font-bold text-primary underline hover:text-primary-dark"
         >

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import 'virtual:icon-collection'
+
   import Footer from './components/Footer.svelte'
   import Header from './components/Header.svelte'
   import Editor from './pages/Editor.svelte'

@@ -203,20 +203,11 @@
     <!-- Button row: left group + right "风格配置" -->
     <div class="flex items-center justify-between px-4 pb-4 pt-3">
       <div class="flex items-center gap-2">
-        <button class="btn btn-outline btn-xs gap-1" onclick={handleBack}>
-          <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
-          重新上传
-        </button>
-        <button class="btn btn-outline btn-xs gap-1" onclick={handleRegenerateAll}>
-          <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
-          重新生成
-        </button>
+        <button class="btn btn-outline btn-xs" onclick={handleBack}> 重新上传 </button>
+        <button class="btn btn-outline btn-xs" onclick={handleRegenerateAll}> 重新生成 </button>
         <button class="btn btn-outline btn-xs" onclick={handleDownload}> 下载通讯录 </button>
       </div>
-      <button class="btn btn-outline btn-xs gap-1" onclick={() => (showPanel = true)}>
-        <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
-        风格配置
-      </button>
+      <button class="btn btn-outline btn-xs" onclick={() => (showPanel = true)}> 风格配置 </button>
     </div>
   </div>
 
