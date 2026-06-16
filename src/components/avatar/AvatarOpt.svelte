@@ -102,7 +102,7 @@
       {#each enumVals as opt (opt)}
         {@const isSelected = selected.includes(opt)}
         <button
-          class="cursor-pointer border-2 transition-all
+          class="cursor-pointer border transition-all
             {isSelected
             ? 'border-primary bg-primary/10'
             : 'border-transparent hover:border-text/20'}"
@@ -131,7 +131,7 @@
         {@const color = hexColor(opt)}
         <button
           type="button"
-          class="h-9 w-9 cursor-pointer rounded-full border-2 transition-all
+          class="h-9 w-9 cursor-pointer rounded-full border transition-all
             {isSelected ? 'scale-110 border-primary' : 'border-base-300/40 hover:border-base-300'}"
           style="background:{color}"
           onclick={() => onToggle(fieldKey, opt)}

@@ -167,15 +167,8 @@
 <div class="flex flex-1 flex-col p-6">
   <!-- Header + Style Bar: sticky -->
   <div class="sticky top-0 z-20 mb-6 rounded-box border border-base-300 bg-base-100">
-    <!-- Title row: back + title + count, flush left -->
-    <div class="flex items-center gap-1 pt-4 pb-3 pl-0 pr-4">
-      <button
-        class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-base-content/60 hover:text-base-content"
-        onclick={handleBack}
-        aria-label="返回上传"
-      >
-        <Icon icon="line-md:arrow-left-twotone" class="h-4 w-4" />
-      </button>
+    <!-- Title row: title + count, flush left -->
+    <div class="flex items-center gap-1 pt-4 pb-3 pl-4 pr-4">
       <h2 class="text-lg font-bold">联系人编辑</h2>
       {#if pageData?.contacts}
         <span class="text-sm text-base-content/50">共 {pageData.contacts.length} 个联系人</span>
@@ -195,7 +188,11 @@
             title={key}
           >
             <div class="h-10 w-10 overflow-hidden rounded-none">
-              <AvatarImg styleName={key} options={{}} size={40} seed={key} />
+              <svg width="40" height="40">
+                <use
+                  href="{import.meta.env.BASE_URL}heads.svg#{key.replace(/[^a-zA-Z0-9-]/g, '-')}"
+                />
+              </svg>
             </div>
           </button>
         {/each}
@@ -208,17 +205,17 @@
     <!-- Button row: left group + right "风格配置" -->
     <div class="flex items-center justify-between px-4 pb-4 pt-3">
       <div class="flex items-center gap-2">
-        <button class="btn btn-ghost btn-xs gap-1" onclick={handleBack}>
+        <button class="btn btn-outline btn-xs gap-1" onclick={handleBack}>
           <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
           重新上传
         </button>
-        <button class="btn btn-ghost btn-xs gap-1" onclick={handleRegenerateAll}>
+        <button class="btn btn-outline btn-xs gap-1" onclick={handleRegenerateAll}>
           <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
           重新生成
         </button>
-        <button class="btn btn-ghost btn-xs" onclick={handleDownload}> 下载通讯录 </button>
+        <button class="btn btn-outline btn-xs" onclick={handleDownload}> 下载通讯录 </button>
       </div>
-      <button class="btn btn-ghost btn-xs gap-1" onclick={() => (showPanel = true)}>
+      <button class="btn btn-outline btn-xs gap-1" onclick={() => (showPanel = true)}>
         <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
         风格配置
       </button>
@@ -227,7 +224,7 @@
 
   <!-- Table -->
   <div class="overflow-x-auto rounded-box border border-base-300">
-    <table class="table">
+    <table class="table table-xs table-zebra">
       <thead>
         <tr>
           <th class="min-w-20 cursor-pointer select-none" onclick={() => toggleSort('familyName')}>
@@ -265,23 +262,23 @@
         {#each sortedContacts as contact, contactIdx (contactIdx)}
           <tr>
             <td class="min-w-20">
-              <input class="input" bind:value={contact.familyName} placeholder="姓" />
+              <input class="input input-xs" bind:value={contact.familyName} placeholder="姓" />
             </td>
             <td class="min-w-20">
-              <input class="input" bind:value={contact.givenName} placeholder="名" />
+              <input class="input input-xs" bind:value={contact.givenName} placeholder="名" />
             </td>
             <td class="min-w-28">
-              <input class="input" bind:value={contact.fn} placeholder="姓名" />
+              <input class="input input-xs" bind:value={contact.fn} placeholder="姓名" />
             </td>
             <td class="min-w-20">
-              <select class="select" bind:value={contact.gender}>
+              <select class="select select-xs" bind:value={contact.gender}>
                 <option value={Gender.M}>男</option>
                 <option value={Gender.F}>女</option>
                 <option value={Gender.U}>未知</option>
               </select>
             </td>
             <td class="min-w-28">
-              <input class="input" bind:value={contact.org} placeholder="单位" />
+              <input class="input input-xs" bind:value={contact.org} placeholder="单位" />
             </td>
             <td class="min-w-36">
               {#if contact.tel.length === 0}

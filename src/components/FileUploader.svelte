@@ -89,7 +89,7 @@
   {#if uploadedFile}
     <!-- Uploaded state -->
     <div
-      class="flex h-56 w-full flex-col items-center justify-center gap-3 rounded-box border-2 border-dashed border-primary bg-primary/10 px-8"
+      class="flex h-56 w-full flex-col items-center justify-center gap-3 rounded-box border border-dashed border-primary bg-primary/10 px-8"
     >
       <Icon icon="line-md:clipboard-check-twotone" class="h-10 w-10 text-primary" />
       <span class="font-bold text-primary">{uploadedFile.name}</span>
@@ -101,7 +101,7 @@
     <!-- Upload prompt -->
     <label
       for="vcf-upload"
-      class="flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-box border-2 border-dashed border-base-300 bg-base-100 px-8 {dragOver
+      class="flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-box border border-dashed border-base-300 bg-base-100 px-8 {dragOver
         ? 'border-primary bg-primary/10'
         : ''}"
       ondragover={handleDragOver}

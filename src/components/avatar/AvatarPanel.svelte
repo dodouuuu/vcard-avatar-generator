@@ -414,7 +414,7 @@
                   {@const isTransparent = p.value === 'transparent'}
                   <button
                     type="button"
-                    class="h-7 w-7 cursor-pointer rounded-full border-2 transition-all
+                    class="h-7 w-7 cursor-pointer rounded-full border transition-all
                       {current === p.value
                       ? 'scale-110 border-primary'
                       : 'border-base-300/40 hover:border-base-300'}"
