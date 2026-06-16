@@ -7,7 +7,7 @@
    */
   import { Avatar, type Style } from '@dicebear/core'
 
-  import { loadStyle } from './styles'
+  import { loadStyle } from '../../generated/dicebear-styles'
 
   interface Props {
     styleName: string

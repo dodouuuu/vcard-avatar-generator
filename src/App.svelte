@@ -1,5 +1,8 @@
 <script lang="ts">
-  import 'virtual:icon-collection'
+  import { addCollection } from '@iconify/svelte'
+
+  import icons from './generated/icons.json'
+  addCollection(icons)
 
   import Footer from './components/Footer.svelte'
   import Header from './components/Header.svelte'

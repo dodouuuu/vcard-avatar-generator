@@ -14,22 +14,22 @@ export interface SpotCard {
 
 export const spotCardConfig: SpotCard[] = [
   {
-    img: `${import.meta.env.BASE_URL}image/ad-placeholder.svg`,
+    img: `${import.meta.env.BASE_URL}promo-placeholder.svg`,
     link: '#',
     alt: '展位',
   },
   {
-    img: `${import.meta.env.BASE_URL}image/ad-placeholder.svg`,
+    img: `${import.meta.env.BASE_URL}promo-placeholder.svg`,
     link: '#',
     alt: '展位',
   },
   {
-    img: `${import.meta.env.BASE_URL}image/ad-placeholder.svg`,
+    img: `${import.meta.env.BASE_URL}promo-placeholder.svg`,
     link: '#',
     alt: '展位',
   },
   {
-    img: `${import.meta.env.BASE_URL}image/ad-placeholder.svg`,
+    img: `${import.meta.env.BASE_URL}promo-placeholder.svg`,
     link: '#',
     alt: '展位',
   },

@@ -138,7 +138,6 @@
     </button>
     <button class="btn btn-primary" onclick={handleParse} disabled={!uploadedFile || parsing}>
       {#if parsing}
-        <Icon icon="line-md:loading-twotone-loop" class="h-5 w-5" />
         解析中...
       {:else}
         解析文件

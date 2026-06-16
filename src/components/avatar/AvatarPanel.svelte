@@ -12,10 +12,10 @@
   import { fly } from 'svelte/transition'
 
   import { buildFemaleDefaults, buildMaleDefaults, DEFAULT_BASE } from '../../config/dicebear'
+  import { loadStyle } from '../../generated/dicebear-styles'
   import type { StoredOptions } from '../../types'
   import AvatarImg from './AvatarImg.svelte'
   import AvatarOpt from './AvatarOpt.svelte'
-  import { loadStyle } from './styles'
 
   /** Build OptionsDescriptor for a loaded style.
    *

@@ -154,12 +154,12 @@ export function dicebearStylesPlugin(): Plugin {
       const names = discoverStyles()
 
       // 1. Write lazy-loading styles module
-      const modulePath = path.resolve('src/components/avatar/styles.ts')
+      const modulePath = path.resolve('src/generated/dicebear-styles.ts')
       const module = generateModule(names)
       write(modulePath, module)
 
       // 2. Write SVG sprite sheet for the style bar
-      const spritePath = path.resolve('public/image/header.svg')
+      const spritePath = path.resolve('src/generated/dicebear-header.svg')
       const sprite = generateSprite(names)
       write(spritePath, sprite)
     },

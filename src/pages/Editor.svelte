@@ -1,11 +1,13 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
+  import { onMount } from 'svelte'
   import { SvelteMap } from 'svelte/reactivity'
 
   import AvatarImg from '../components/avatar/AvatarImg.svelte'
   import AvatarPanel from '../components/avatar/AvatarPanel.svelte'
-  import { STYLE_NAMES } from '../components/avatar/styles'
   import { DEFAULT_BASE } from '../config/dicebear'
+  import dicebearHeader from '../generated/dicebear-header.svg?raw'
+  import { STYLE_NAMES } from '../generated/dicebear-styles'
   import { type Contact, Gender, type StoredOptions } from '../types'
   import { generateVcf } from '../utils/contact-writer'
 
@@ -162,6 +164,15 @@
     a.click()
     URL.revokeObjectURL(url)
   }
+
+  // Inject the DiceBear SVG sprite into the DOM for <use> references
+  onMount(() => {
+    const wrapper = document.createElement('div')
+    wrapper.style.display = 'none'
+    wrapper.innerHTML = dicebearHeader
+    document.body.appendChild(wrapper)
+    return () => wrapper.remove()
+  })
 </script>
 
 <div class="flex flex-1 flex-col p-6">
@@ -189,7 +200,7 @@
           >
             <div class="h-10 w-10 overflow-hidden rounded-none">
               <svg width="40" height="40">
-                <use href="image/header.svg#{key.replace(/[^a-zA-Z0-9-]/g, '-')}" />
+                <use href="#{key.replace(/[^a-zA-Z0-9-]/g, '-')}" />
               </svg>
             </div>
           </button>
