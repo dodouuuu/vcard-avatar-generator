@@ -1,20 +1,49 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
+  import { SvelteMap } from 'svelte/reactivity'
 
-  import { type Contact, Gender } from '../types'
+  import AvatarImg from '../components/avatar/AvatarImg.svelte'
+  import AvatarPanel from '../components/avatar/AvatarPanel.svelte'
+  import { STYLE_NAMES } from '../components/avatar/styles'
+  import { DEFAULT_BASE } from '../config/dicebear'
+  import { type Contact, Gender, type StoredOptions } from '../types'
+  import { generateVcf } from '../utils/contact-writer'
 
   interface Props {
     data: { contacts: Contact[] } | null
     onNavigate: (page: string, data?: unknown) => void
   }
 
-  let { data, onNavigate }: Props = $props()
+  let { data: pageData, onNavigate }: Props = $props()
 
-  let contacts = $state<Contact[]>(data?.contacts ?? [])
+  let contacts = $derived(pageData?.contacts ?? [])
 
-  /** Navigates back to the upload page. */
+  /**
+   *
+   */
   function handleBack() {
     onNavigate('upload')
+  }
+
+  // -- Style list --
+  let styleKeys = STYLE_NAMES
+
+  // -- DiceBear state --
+  let currentStyle = $state(styleKeys[0] ?? 'avataaars')
+  let baseOptions = $state<StoredOptions>({ ...DEFAULT_BASE })
+  let maleOverrides = $state<StoredOptions>({})
+  let femaleOverrides = $state<StoredOptions>({})
+  let showPanel = $state(false)
+
+  /**
+   * Merge base options with gender-specific overrides for rendering.
+   *
+   * @param gender
+   * @returns Merged StoredOptions for the given gender.
+   */
+  function configForGender(gender: Gender): StoredOptions {
+    const overrides = gender === Gender.F ? femaleOverrides : maleOverrides
+    return { ...baseOptions, ...overrides }
   }
 
   // -- table sorting --
@@ -22,22 +51,26 @@
   let sortKey = $state<SortKey>(null)
   let sortDir = $state<'asc' | 'desc'>('asc')
 
+  /**
+   * Sorted contacts with cached sort state
+   * @returns sorted contacts array
+   */
   const sortedContacts = $derived.by(() => {
-    if (!sortKey) {
+    const key = sortKey
+    if (!key) {
       return contacts
     }
     return [...contacts].sort((a, b) => {
-      const aVal = String(a[sortKey] ?? '')
-      const bVal = String(b[sortKey] ?? '')
+      const aVal = String(a[key] ?? '')
+      const bVal = String(b[key] ?? '')
       const cmp = aVal.localeCompare(bVal, 'zh-CN')
       return sortDir === 'asc' ? cmp : -cmp
     })
   })
 
   /**
-   * Toggles or sets the sort key/direction for the table.
-   * Clicking the same column toggles asc/desc; clicking a different column resets to asc.
-   * @param key - The column key to sort by.
+   *
+   * @param key
    */
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -49,9 +82,9 @@
   }
 
   /**
-   * Returns the icon name for the current sort state of a given column.
-   * @param key - The sort key to check.
-   * @returns The line-md icon name for the sort state.
+   * Get sort direction icon
+   * @param key
+   * @returns icon name string
    */
   function sortIcon(key: SortKey) {
     if (sortKey !== key) {
@@ -59,58 +92,163 @@
     }
     return sortDir === 'asc' ? 'line-md:arrow-up' : 'line-md:arrow-down'
   }
+
+  // -- Avatar regeneration --
+  let regenerationSeeds = new SvelteMap<number, string>()
+
+  /**
+   * Get seed for a contact avatar
+   * @param contactIdx - contact index
+   * @returns seed string
+   */
+  function getSeed(contactIdx: number): string {
+    return regenerationSeeds.get(contactIdx) ?? contacts[contactIdx]?.fn ?? 'default'
+  }
+
+  /**
+   * Regenerate avatar for a contact
+   * @param contactIdx - contact index
+   * @returns void
+   */
+  function handleAvatarClick(contactIdx: number) {
+    const newSeed = `r${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
+    const updated = new SvelteMap(regenerationSeeds)
+    updated.set(contactIdx, newSeed)
+    regenerationSeeds = updated
+  }
+
+  /**
+   * Apply config changes from the panel
+   * @param common
+   * @param base
+   * @param male
+   * @param female
+   * @returns void
+   */
+  function handleApplyConfig(base: StoredOptions, male: StoredOptions, female: StoredOptions) {
+    baseOptions = base
+    maleOverrides = male
+    femaleOverrides = female
+  }
+
+  /**
+   *
+   */
+  function handleRegenerateAll() {
+    const updated = new SvelteMap<number, string>()
+    for (let i = 0; i < contacts.length; i++) {
+      updated.set(i, `r${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
+    }
+    regenerationSeeds = updated
+  }
+
+  /**
+   *
+   */
+  function handleClosePanel() {
+    showPanel = false
+  }
+
+  /**
+   *
+   */
+  function handleDownload() {
+    const vcf = generateVcf(contacts)
+    const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'contacts.vcf'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 </script>
 
-<div class="flex flex-1 flex-col px-6 pb-6">
-  <!-- Header -->
-  <div class="mb-6 flex items-center gap-4 pt-6">
-    <button class="btn btn-ghost btn-square" onclick={handleBack} aria-label="返回上传">
-      <Icon icon="line-md:arrow-left-twotone" class="h-6 w-6" />
-    </button>
-    <div>
-      <h2 class="text-2xl font-bold">联系人编辑</h2>
-      {#if data?.contacts}
-        <p class="text-sm text-base-content/70">
-          共 {data.contacts.length} 个联系人
-        </p>
+<div class="flex flex-1 flex-col p-6">
+  <!-- Header + Style Bar: sticky -->
+  <div class="sticky top-0 z-20 mb-6 rounded-box border border-base-300 bg-base-100">
+    <!-- Title row: title + count, flush left -->
+    <div class="flex items-center gap-1 pt-4 pb-3 pl-4 pr-4">
+      <h2 class="text-lg font-bold">联系人编辑</h2>
+      {#if pageData?.contacts}
+        <span class="text-sm text-base-content/50">共 {pageData.contacts.length} 个联系人</span>
       {/if}
+    </div>
+
+    <!-- Style bar (no label) -->
+    <div class="px-4 pb-3">
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        {#each styleKeys as key (key)}
+          <button
+            class="flex shrink-0 flex-col items-center border transition-all cursor-pointer
+              {key === currentStyle
+              ? 'border-primary bg-primary/10'
+              : 'border-transparent hover:border-base-content/20'}"
+            onclick={() => (currentStyle = key)}
+            title={key}
+          >
+            <div class="h-10 w-10 overflow-hidden rounded-none">
+              <svg width="40" height="40">
+                <use href="image/header.svg#{key.replace(/[^a-zA-Z0-9-]/g, '-')}" />
+              </svg>
+            </div>
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mx-4 border-t border-base-300"></div>
+
+    <!-- Button row: left group + right "风格配置" -->
+    <div class="flex items-center justify-between px-4 pb-4 pt-3">
+      <div class="flex items-center gap-2">
+        <button class="btn btn-outline btn-xs gap-1" onclick={handleBack}>
+          <Icon icon="line-md:chevron-double-left-twotone" class="h-3 w-3" />
+          重新上传
+        </button>
+        <button class="btn btn-outline btn-xs gap-1" onclick={handleRegenerateAll}>
+          <Icon icon="line-md:refresh-twotone" class="h-3 w-3" />
+          重新生成
+        </button>
+        <button class="btn btn-outline btn-xs" onclick={handleDownload}> 下载通讯录 </button>
+      </div>
+      <button class="btn btn-outline btn-xs gap-1" onclick={() => (showPanel = true)}>
+        <Icon icon="line-md:cog-twotone" class="h-3 w-3" />
+        风格配置
+      </button>
     </div>
   </div>
 
   <!-- Table -->
-  <div class="overflow-x-auto border-base-300 rounded-md border-2 bg-base-100">
-    <table class="table table-pin-rows table-xs table-zebra">
+  <div class="overflow-x-auto rounded-box border border-base-300">
+    <table class="table table-xs table-zebra">
       <thead>
         <tr>
           <th class="min-w-20 cursor-pointer select-none" onclick={() => toggleSort('familyName')}>
-            <span class="flex items-center gap-1">
-              姓
-              <Icon icon={sortIcon('familyName')} class="h-4 w-4 opacity-60" />
-            </span>
+            <span class="flex items-center gap-1"
+              >姓<Icon icon={sortIcon('familyName')} class="h-4 w-4 opacity-60" /></span
+            >
           </th>
           <th class="min-w-20 cursor-pointer select-none" onclick={() => toggleSort('givenName')}>
-            <span class="flex items-center gap-1">
-              名
-              <Icon icon={sortIcon('givenName')} class="h-4 w-4 opacity-60" />
-            </span>
+            <span class="flex items-center gap-1"
+              >名<Icon icon={sortIcon('givenName')} class="h-4 w-4 opacity-60" /></span
+            >
           </th>
           <th class="min-w-28 cursor-pointer select-none" onclick={() => toggleSort('fn')}>
-            <span class="flex items-center gap-1">
-              姓名
-              <Icon icon={sortIcon('fn')} class="h-4 w-4 opacity-60" />
-            </span>
+            <span class="flex items-center gap-1"
+              >姓名<Icon icon={sortIcon('fn')} class="h-4 w-4 opacity-60" /></span
+            >
           </th>
           <th class="min-w-20 cursor-pointer select-none" onclick={() => toggleSort('gender')}>
-            <span class="flex items-center gap-1">
-              性别
-              <Icon icon={sortIcon('gender')} class="h-4 w-4 opacity-60" />
-            </span>
+            <span class="flex items-center gap-1"
+              >性别<Icon icon={sortIcon('gender')} class="h-4 w-4 opacity-60" /></span
+            >
           </th>
           <th class="min-w-28 cursor-pointer select-none" onclick={() => toggleSort('org')}>
-            <span class="flex items-center gap-1">
-              单位
-              <Icon icon={sortIcon('org')} class="h-4 w-4 opacity-60" />
-            </span>
+            <span class="flex items-center gap-1"
+              >单位<Icon icon={sortIcon('org')} class="h-4 w-4 opacity-60" /></span
+            >
           </th>
           <th class="min-w-36">手机号</th>
           <th class="sticky right-0 z-[1] bg-base-100 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.15)]"
@@ -121,44 +259,25 @@
       <tbody>
         {#each sortedContacts as contact, contactIdx (contactIdx)}
           <tr>
-            <!-- Family name -->
             <td class="min-w-20">
-              <input
-                class="input input-xs w-full"
-                bind:value={contact.familyName}
-                placeholder="姓"
-              />
+              <input class="input input-xs" bind:value={contact.familyName} placeholder="姓" />
             </td>
-
-            <!-- Given name -->
             <td class="min-w-20">
-              <input
-                class="input input-xs w-full"
-                bind:value={contact.givenName}
-                placeholder="名"
-              />
+              <input class="input input-xs" bind:value={contact.givenName} placeholder="名" />
             </td>
-
-            <!-- Formatted name -->
             <td class="min-w-28">
-              <input class="input input-xs w-full" bind:value={contact.fn} placeholder="姓名" />
+              <input class="input input-xs" bind:value={contact.fn} placeholder="姓名" />
             </td>
-
-            <!-- Gender -->
             <td class="min-w-20">
-              <select class="select select-xs w-full" bind:value={contact.gender}>
+              <select class="select select-xs" bind:value={contact.gender}>
                 <option value={Gender.M}>男</option>
                 <option value={Gender.F}>女</option>
                 <option value={Gender.U}>未知</option>
               </select>
             </td>
-
-            <!-- Organization -->
             <td class="min-w-28">
-              <input class="input input-xs w-full" bind:value={contact.org} placeholder="单位" />
+              <input class="input input-xs" bind:value={contact.org} placeholder="单位" />
             </td>
-
-            <!-- Phone numbers -->
             <td class="min-w-36">
               {#if contact.tel.length === 0}
                 <span class="text-base-content/40">—</span>
@@ -170,20 +289,22 @@
                 </div>
               {/if}
             </td>
-
-            <!-- Avatar -->
             <td class="sticky right-0 z-[1] shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.15)]">
-              <div class="avatar">
-                {#if contact.photo}
-                  <div class="w-10 rounded-full">
-                    <img src={contact.photo} alt="头像" class="object-cover" />
-                  </div>
-                {:else}
-                  <div class="bg-base-200 flex w-10 items-center justify-center rounded-full">
-                    <Icon icon="line-md:emoji-frown-filled" class="h-5 w-5 text-base-content/40" />
-                  </div>
-                {/if}
-              </div>
+              <button
+                class="cursor-pointer border-none bg-transparent p-0"
+                title="点击重新生成头像"
+                aria-label="重新生成头像"
+                onclick={() => handleAvatarClick(contactIdx)}
+              >
+                <div class="w-10">
+                  <AvatarImg
+                    styleName={currentStyle}
+                    options={configForGender(contact.gender)}
+                    seed={getSeed(contactIdx)}
+                    size={80}
+                  />
+                </div>
+              </button>
             </td>
           </tr>
         {/each}
@@ -192,14 +313,13 @@
   </div>
 </div>
 
-<style>
-  :global(.table-zebra thead tr th.sticky) {
-    background: var(--color-base-100);
-  }
-  :global(.table-zebra tbody tr td.sticky) {
-    background: var(--color-base-100);
-  }
-  :global(.table-zebra tbody tr:nth-child(even) td.sticky) {
-    background: var(--color-base-200);
-  }
-</style>
+<!-- Avatar Config Panel -->
+<AvatarPanel
+  {currentStyle}
+  {baseOptions}
+  {maleOverrides}
+  {femaleOverrides}
+  bind:showPanel
+  onApply={handleApplyConfig}
+  onClose={handleClosePanel}
+/>

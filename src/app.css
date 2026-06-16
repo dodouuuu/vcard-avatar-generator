@@ -1,4 +1,100 @@
 @import 'tailwindcss';
+
 @plugin 'daisyui' {
-  themes: forest --default;
+  themes: cartoon --default;
+}
+
+@plugin 'daisyui/theme' {
+  name: 'cartoon';
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* ---- 语义色 ---- */
+  --color-primary: #225555;
+  --color-primary-content: #ffffff;
+  --color-secondary: #bbaa99;
+  --color-secondary-content: #51463b;
+  --color-accent: #9cd3d3;
+  --color-accent-content: #51463b;
+  --color-neutral: #225555;
+  --color-neutral-content: #ffffff;
+
+  /* ---- 功能色 ---- */
+  --color-info: #9cd3d3;
+  --color-info-content: #51463b;
+  --color-success: #52c41a;
+  --color-success-content: #ffffff;
+  --color-warning: #faad14;
+  --color-warning-content: #51463b;
+  --color-error: #da8787;
+  --color-error-content: #51463b;
+
+  /* ---- 底色 ---- */
+  --color-base-100: #fafaee;
+  --color-base-200: #f0ecd8;
+  --color-base-300: #cbc4af;
+  --color-base-content: #51463b;
+
+  /* ---- 圆角 ---- */
+  --radius-selector: 9999px; /* 胶囊形 — 标签/徽章/勾选框 */
+  --radius-field: 9999px; /* 胶囊形 — 按钮/输入框/下拉框 */
+  --radius-box: 16px; /* 卡片/弹窗/表格 */
+
+  /* ---- 边框 (2px 粗线) ---- */
+  --border: 2px;
+
+  /* ---- 阴影 (无) ---- */
+  --depth: 0;
+  --noise: 0;
+}
+
+/* 滚动条 — 无白色背景 */
+/* 所有边框统一使用主题线宽 --border: 2px */
+.border {
+  border-width: var(--border);
+}
+.border-t {
+  border-top-width: var(--border);
+}
+.border-b {
+  border-bottom-width: var(--border);
+}
+.border-r {
+  border-right-width: var(--border);
+}
+.border-l {
+  border-left-width: var(--border);
+}
+.border-x {
+  border-left-width: var(--border);
+  border-right-width: var(--border);
+}
+.border-y {
+  border-top-width: var(--border);
+  border-bottom-width: var(--border);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+}
+
+/* 表格斑马纹 sticky 列 — 继承行背景，防止横向滚动透出内容 */
+.table-zebra tbody tr td.sticky {
+  background-color: var(--color-base-100);
+}
+.table-zebra tbody tr:nth-child(even) td.sticky {
+  background-color: var(--color-base-200);
 }

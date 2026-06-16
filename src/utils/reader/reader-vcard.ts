@@ -71,7 +71,7 @@ function parseComponent(comp: ICAL.Component): Contact | null {
 
   // --- N (Structured Name) ---
   // A structured representation of the name split into components. The first
-  // element is the family name (姓) and the second is the given name (名).
+  // element is the family name and the second is the given name.
   const nProp = comp.getFirstProperty('n')
   if (nProp) {
     const nValue = nProp.getFirstValue()

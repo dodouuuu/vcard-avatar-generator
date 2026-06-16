@@ -1,9 +1,26 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import js from '@eslint/js'
 import prettier from 'eslint-config-prettier'
 import jsdoc from 'eslint-plugin-jsdoc'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import svelte from 'eslint-plugin-svelte'
 import ts from 'typescript-eslint'
+
+/**
+ * Read .gitignore and parse it into glob patterns for ESLint ignores.
+ * Filters out blank lines and comments.
+ * @returns Glob pattern strings.
+ */
+function gitignorePatterns() {
+  const filePath = path.resolve(import.meta.dirname, '.gitignore')
+  const content = fs.readFileSync(filePath, 'utf-8')
+  return content
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#'))
+}
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -58,7 +75,5 @@ export default [
       },
     },
   },
-  {
-    ignores: ['build/', 'dist/', 'node_modules/', '.svelte-kit/', '.vite'],
-  },
+  { ignores: gitignorePatterns() },
 ]

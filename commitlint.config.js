@@ -6,16 +6,16 @@ export default {
       2,
       'always',
       [
-        'feat',      // 新功能
-        'fix',       // 修复 bug
-        'docs',      // 文档变更
-        'style',     // 代码格式（不影响逻辑）
-        'refactor',  // 重构
-        'perf',      // 性能优化
-        'test',      // 测试
-        'chore',     // 构建/工具/依赖变更
-        'ci',        // CI 配置
-        'revert',    // 回滚
+        'feat',      // new feature
+        'fix',       // bug fix
+        'docs',      // documentation
+        'style',     // formatting (no logic change)
+        'refactor',  // refactoring
+        'perf',      // performance improvement
+        'test',      // testing
+        'chore',     // build/tool/dependency changes
+        'ci',        // CI configuration
+        'revert',    // rollback
       ],
     ],
     'type-case': [2, 'always', 'lower-case'],
