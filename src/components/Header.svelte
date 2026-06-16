@@ -12,9 +12,10 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="GitHub repository"
-      class="absolute right-0 text-white/50 transition-colors hover:text-white"
+      class="absolute right-0 flex items-center gap-2 rounded-lg bg-black/20 px-2 py-1 text-sm text-white transition-colors hover:bg-black/35 sm:px-3 sm:py-1.5"
     >
       <Icon icon="line-md:github" class="h-6 w-6" />
+      <span class="hidden sm:inline">GitHub</span>
     </a>
   </div>
 </header>

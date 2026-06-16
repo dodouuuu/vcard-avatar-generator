@@ -5,6 +5,9 @@
   import { spotCardConfig } from '../config/spotcard'
   import { type Contact } from '../types'
 
+  /** Build timestamp in Asia/Shanghai timezone, injected by Vite define (e.g. "2026/6/16 14:30:00 (UTC+8)"). */
+  declare const __BUILD_TIME__: string
+
   interface Props {
     onNavigate: (page: string, data?: unknown) => void
   }
@@ -44,20 +47,24 @@
       <div class="flex flex-col gap-3 rounded-box border border-base-300 bg-base-100 p-6">
         <div class="flex items-start gap-3">
           <Icon icon="line-md:alert-circle-twotone" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <span class="text-sm">所有数据仅在本地处理，不会上传到任何服务器。</span>
+          <span class="text-sm text-justify break-all text-error"
+            >所有数据仅在本地处理，不会上传到任何服务器</span
+          >
         </div>
         <div class="flex items-start gap-3">
           <Icon icon="line-md:alert-circle-twotone" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <span class="text-sm"
-            >我们不会存储你的个人信息，关闭页面后不会保留任何痕迹，请放心使用。</span
+          <span class="text-sm text-justify break-all text-error"
+            >关闭页面后不会保留任何个人数据，请放心使用</span
           >
+        </div>
+        <div class="flex items-start gap-3">
+          <Icon icon="line-md:alert-circle-twotone" class="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <span class="text-sm text-justify break-all text-error">构建于 {__BUILD_TIME__}</span>
         </div>
       </div>
 
       <!-- Upload area -->
-      <div class="flex flex-1 flex-col">
-        <FileUploader onParsed={handleParsed} />
-      </div>
+      <FileUploader onParsed={handleParsed} />
     </div>
 
     <!-- Right ad slot -->
